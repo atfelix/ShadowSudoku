@@ -10,11 +10,10 @@
 
 #import "Sudoku.h"
 
-@interface SudokuViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource>
+@interface SudokuViewController ()
 
 @property (nonatomic, strong) Sudoku *sudoku;
-
-@property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, strong) UIView *gridView;
 
 @end
 
@@ -30,52 +29,37 @@
 -(void)setupSudoku {
     NSString *path = [[NSBundle mainBundle] pathForResource:@"debug"
                                                      ofType:@"sudoku"];
-    NSURL *url = [NSURL fileURLWithPath:path];
-
-    self.sudoku = [[Sudoku alloc] initFromContentsOfURL:url];
+    self.sudoku = [[Sudoku alloc] initFromContentsOfURL:[NSURL fileURLWithPath:path]];
 }
 
 -(void)setupSudokuGrid {
-    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.width)
-                                             collectionViewLayout:layout];
-    self.collectionView.backgroundColor = [UIColor redColor];
-    self.collectionView.delegate = self;
-    self.collectionView.dataSource = self;
-    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"Cell"];
 
-    [self.view addSubview:self.collectionView];
+    CGFloat width = (self.view.bounds.size.width - 20) / 3;
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            UIView *view = [[UIView alloc] initWithFrame:CGRectMake(j * width, i * width, width, width)];
+            view.userInteractionEnabled = YES;
+            view.layer.borderColor = [UIColor blackColor].CGColor;
+            view.layer.borderWidth = 2.0;
+            [self.gridView addSubview:view];
+        }
+    }
 }
 
--(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    CGFloat cellWidth = self.view.bounds.size.width / 10;
-    return CGSizeMake(cellWidth, cellWidth);
+-(void)setupGridView {
+    UIView *gridView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.view addSubview:gridView];
+    [self setupGridViewConstraints:gridView];
+    self.gridView = gridView;
 }
 
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return 81;
-}
-
--(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"%@", @(indexPath.item));
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
-    cell.backgroundColor = [UIColor whiteColor];
-    UILabel *label = [[UILabel alloc] initWithFrame:cell.frame];
-    label.text = [NSString stringWithFormat:@"%@", @(indexPath.item)];
-    [cell addSubview:label];
-    return cell;
-}
-
--(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return 1;
-}
-
--(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
-    return 1;
-}
-
--(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
-    return 1;
+-(void)setupGridViewConstraints:(UIView *)gridView {
+    gridView.translatesAutoresizingMaskIntoConstraints = NO;
+    [gridView.topAnchor constraintEqualToAnchor:self.topLayoutGuide.bottomAnchor].active = YES;
+    [gridView.leftAnchor constraintEqualToAnchor:self.view.leftAnchor constant:10.0].active = YES;
+    [gridView.widthAnchor constraintEqualToConstant:self.view.bounds.size.width - 100].active = YES;
+    [gridView.heightAnchor constraintEqualToAnchor:self.gridView.widthAnchor].active = YES;
 }
 
 @end

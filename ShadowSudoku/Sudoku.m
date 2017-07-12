@@ -10,8 +10,8 @@
 
 @interface Sudoku ()
 
-@property (nonatomic, strong) NSMutableArray <NSNumber *> *originalPuzzle;
-@property (nonatomic, strong) NSMutableArray <NSNumber *> *changingPuzzle;
+@property (nonatomic, strong, readonly) NSMutableArray <NSNumber *> *originalPuzzle;
+@property (nonatomic, strong, readwrite) NSMutableArray <NSNumber *> *changingPuzzle;
 
 @end
 
@@ -33,13 +33,11 @@
 -(void)setupOriginalPuzzleFromURL:(NSURL *) url {
     _originalPuzzle = [@[] mutableCopy];
     [self setupPuzzle:_originalPuzzle fromURL:url];
-    NSLog(@"%@", _originalPuzzle);
 }
 
 -(void)setupChangingPuzzleFromURL:(NSURL *) url {
     _changingPuzzle = [@[] mutableCopy];
     [self setupPuzzle:_changingPuzzle fromURL:url];
-    NSLog(@"%@", _changingPuzzle);
 }
 
 -(void)setupPuzzle:(NSMutableArray *)puzzle fromURL:(NSURL *)url {
