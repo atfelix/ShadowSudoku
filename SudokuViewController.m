@@ -39,9 +39,7 @@
     for (NSInteger i = 0; i < 3; i++) {
         for (NSInteger j = 0; j < 3; j++) {
             UIView *view = [[UIView alloc] initWithFrame:CGRectMake(j * width, i * width, width, width)];
-            view.userInteractionEnabled = YES;
-            view.layer.borderColor = [UIColor blackColor].CGColor;
-            view.layer.borderWidth = 2.0;
+            [self setupView:view withUserInteraction:YES withBorderColor:[UIColor blackColor] borderWidth:2.5];
             [self.gridView addSubview:view];
             [self setupBoxAtRow:i andColumn:j inGridView:view];
         }
@@ -59,7 +57,7 @@
     gridView.translatesAutoresizingMaskIntoConstraints = NO;
     [gridView.topAnchor constraintEqualToAnchor:self.topLayoutGuide.bottomAnchor].active = YES;
     [gridView.leftAnchor constraintEqualToAnchor:self.view.leftAnchor constant:10.0].active = YES;
-    [gridView.widthAnchor constraintEqualToConstant:self.view.bounds.size.width - 100].active = YES;
+    [gridView.widthAnchor constraintEqualToConstant:self.view.bounds.size.width - 10].active = YES;
     [gridView.heightAnchor constraintEqualToAnchor:self.gridView.widthAnchor].active = YES;
 }
 
@@ -69,15 +67,28 @@
     for (NSInteger i = 0; i < 3; i++) {
         for (NSInteger j = 0; j < 3; j++) {
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(j * width, i * width, width, width)];
-            label.userInteractionEnabled = YES;
-            label.layer.borderColor = [UIColor redColor].CGColor;
-            label.textAlignment = NSTextAlignmentCenter;
-            label.tag = (row * 3 + i) * 9 + column * 3 + j;
-            label.text = [NSString stringWithFormat:@"%@", @((row * 3 + i) * 9 + column * 3 + j)];
-            label.layer.borderWidth = 2.0;
+            [self setupView:label withUserInteraction:YES withBorderColor:[UIColor blackColor] borderWidth:1.0];
+            [self setupSudokuLabel:label
+                     withAlignment:NSTextAlignmentCenter
+                          atBoxRow:row
+                         boxColumn:column
+                            subRow:i
+                         subColumn:j];
             [gridView addSubview:label];
         }
     }
+}
+
+-(void)setupView:(UIView *)view withUserInteraction:(BOOL)userInteraction withBorderColor:(UIColor *)color borderWidth:(CGFloat)width {
+    view.userInteractionEnabled = userInteraction;
+    view.layer.borderColor = color.CGColor;
+    view.layer.borderWidth = width;
+}
+
+-(void)setupSudokuLabel:(UILabel *)label withAlignment:(NSTextAlignment)alignment atBoxRow:(NSInteger)row boxColumn:(NSInteger)column subRow:(NSInteger)subRow subColumn:(NSInteger)subColumn {
+    label.textAlignment = NSTextAlignmentCenter;
+    label.tag = (row * 3 + subRow) * 9 + column * 3 + subColumn;
+    label.text = [NSString stringWithFormat:@"%@", @((row * 3 + subRow) * 9 + column * 3 + subColumn)];
 }
 
 @end
