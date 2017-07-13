@@ -10,6 +10,7 @@
 
 #import "Sudoku.h"
 #import "UIButton+SudokuButton.h"
+#import "UIView+GridCell.h"
 
 @interface SudokuViewController ()
 
@@ -37,16 +38,12 @@
 
 -(void)setupSudokuGrid {
     [self setupGridView];
-    CGFloat width = (self.view.bounds.size.width - 20) / 3;
 
     for (NSInteger i = 0; i < 3; i++) {
         for (NSInteger j = 0; j < 3; j++) {
-            UIView *gridCellView = [[UIView alloc] initWithFrame:CGRectMake(j * width, i * width, width, width)];
-            [self setupView:gridCellView
-        withUserInteraction:YES
-            withBorderColor:[UIColor grayColor]
-                borderWidth:2.5
-            backgroundColor:[UIColor clearColor]];
+            UIView *gridCellView = [UIView viewWithSudokuCellStyleInSuperView:self.view
+                                                                     atBoxRow:i
+                                                                    boxColumn:j];
             [self.gridView addSubview:gridCellView];
             [self setupBoxAtRow:i andColumn:j inGridView:gridCellView];
         }
@@ -83,23 +80,6 @@
             [gridCellView addSubview:button];
         }
     }
-}
-
--(void)setupView:(UIView *)view withUserInteraction:(BOOL)userInteraction withBorderColor:(UIColor *)color borderWidth:(CGFloat)width backgroundColor:(UIColor *)bgColor {
-    view.userInteractionEnabled = userInteraction;
-    view.layer.borderColor = color.CGColor;
-    view.layer.borderWidth = width;
-    view.backgroundColor = bgColor;
-}
-
--(void)setupSudokuButton:(UIButton *)button withAlignment:(NSTextAlignment)alignment atBoxRow:(NSInteger)row boxColumn:(NSInteger)column subRow:(NSInteger)subRow subColumn:(NSInteger)subColumn {
-    button.titleLabel.textAlignment = alignment;
-    button.tag = (row * 3 + subRow) * 9 + column * 3 + subColumn;
-    [button setTitle:[NSString stringWithFormat:@"%@", [self.sudoku numberAtTag:button.tag]]
-            forState:UIControlStateNormal];
-    [button addTarget:self
-               action:@selector(sudokuButtonTapped:)
-     forControlEvents:UIControlEventTouchUpInside];
 }
 
 -(void)sudokuButtonTapped:(UIButton *)sender {

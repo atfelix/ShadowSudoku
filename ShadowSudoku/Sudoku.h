@@ -10,7 +10,7 @@
 
 @interface Sudoku : NSObject
 
--(Sudoku *)initFromContentsOfURL: (NSURL *)url;
+-(instancetype)initFromContentsOfURL: (NSURL *)url;
 -(NSNumber *)numberAtTag:(NSInteger)tag;
 
 +(NSInteger)rowForTag:(NSInteger)tag;
