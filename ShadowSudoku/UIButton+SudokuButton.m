@@ -9,32 +9,54 @@
 #import "UIButton+SudokuButton.h"
 
 #import "Sudoku.h"
+#import "UIColor+SudokuColors.h"
 
 @implementation UIButton (SudokuButton)
 
 +(UIButton *)buttonWithSudokuStyleForTag:(NSInteger)tag sudokuEntry:(NSInteger)entry inGrid:(UIView *)gridCellView {
-    CGFloat width = gridCellView.frame.size.width / 3;
-    NSInteger boxRow = [Sudoku boxRowForTag:tag], boxColumn = [Sudoku boxColumnForTag:tag];
-    NSInteger boxSubRow = [Sudoku boxSubRowForTag:tag], boxSubColumn = [Sudoku boxSubColumnForTag:tag];
-
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.frame = CGRectMake(boxSubColumn * width,
-                              boxSubRow * width,
-                              width,
-                              width);
-    UIColor *titleColor = (entry == 0) ? [UIColor blackColor] : [UIColor whiteColor];
-    UIColor *bgColor = (entry == 0) ? [UIColor whiteColor] : [UIColor blackColor];
 
-    [button setTitleColor:titleColor forState:UIControlStateNormal];
-    button.layer.borderColor = titleColor.CGColor;
-    button.layer.borderWidth = 1.0;
-    button.backgroundColor = bgColor;
-    button.titleLabel.textAlignment = NSTextAlignmentCenter;
-    button.tag = (boxRow * 3 + boxSubRow) * 9 + boxColumn * 3 + boxSubColumn;
-    [button setTitle:[NSString stringWithFormat:@"%@", (entry != 0) ? @(entry) : @""]
-            forState:UIControlStateNormal];
+    [button setButtonFrameForTag:tag inGrid:gridCellView];
+    [button setColorsForEntry:entry];
+    [button setBorderWidth:1.0];
+    [button setTitleForEntry:entry];
+    [button setButtonTag:tag];
 
     return button;
+}
+
+-(void)setColorsForEntry:(NSInteger)entry {
+    UIColor *titleColor = [UIColor titleColorForEntry:entry];
+
+    [self setTitleColor:titleColor forState:UIControlStateNormal];
+    self.layer.borderColor = titleColor.CGColor;
+    self.backgroundColor = [UIColor backgroundColorForEntry:entry];
+}
+
+-(void)setBorderWidth:(CGFloat)width {
+    self.layer.borderWidth = width;
+}
+
+-(void)setTitleForEntry:(NSInteger)entry {
+    self.titleLabel.textAlignment = NSTextAlignmentCenter;
+    [self setTitle:[NSString stringWithFormat:@"%@", (entry != 0) ? @(entry) : @""]
+            forState:UIControlStateNormal];
+}
+
+-(void)setButtonTag:(NSInteger)tag {
+    NSInteger boxRow = [Sudoku boxRowForTag:tag], boxColumn = [Sudoku boxColumnForTag:tag];
+    NSInteger boxSubRow = [Sudoku boxSubRowForTag:tag], boxSubColumn = [Sudoku boxSubColumnForTag:tag];
+    self.tag = (boxRow * 3 + boxSubRow) * 9 + boxColumn * 3 + boxSubColumn;
+}
+
+-(void)setButtonFrameForTag:(NSInteger)tag inGrid:(UIView *)gridCellView {
+    CGFloat width = gridCellView.frame.size.width / 3;
+    NSInteger boxSubRow = [Sudoku boxSubRowForTag:tag], boxSubColumn = [Sudoku boxSubColumnForTag:tag];
+
+    self.frame = CGRectMake(boxSubColumn * width,
+                            boxSubRow * width,
+                            width,
+                            width);
 }
 
 @end
