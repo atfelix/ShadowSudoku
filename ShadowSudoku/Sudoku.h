@@ -11,5 +11,13 @@
 @interface Sudoku : NSObject
 
 -(Sudoku *)initFromContentsOfURL: (NSURL *)url;
+-(NSNumber *)numberAtTag:(NSInteger)tag;
+
++(NSInteger)rowForTag:(NSInteger)tag;
++(NSInteger)columnForTag:(NSInteger)tag;
++(NSInteger)boxRowForTag:(NSInteger)tag;
++(NSInteger)boxColumnForTag:(NSInteger)tag;
++(NSInteger)boxSubRowForTag:(NSInteger)tag;
++(NSInteger)boxSubColumnForTag:(NSInteger)tag;
 
 @end

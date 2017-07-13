@@ -9,6 +9,7 @@
 #import "SudokuViewController.h"
 
 #import "Sudoku.h"
+#import "UIButton+SudokuButton.h"
 
 @interface SudokuViewController ()
 
@@ -29,7 +30,7 @@
 }
 
 -(void)setupSudoku {
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"debug"
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"n00b"
                                                      ofType:@"sudoku"];
     self.sudoku = [[Sudoku alloc] initFromContentsOfURL:[NSURL fileURLWithPath:path]];
 }
@@ -40,14 +41,14 @@
 
     for (NSInteger i = 0; i < 3; i++) {
         for (NSInteger j = 0; j < 3; j++) {
-            UIView *view = [[UIView alloc] initWithFrame:CGRectMake(j * width, i * width, width, width)];
-            [self setupView:view
+            UIView *gridCellView = [[UIView alloc] initWithFrame:CGRectMake(j * width, i * width, width, width)];
+            [self setupView:gridCellView
         withUserInteraction:YES
-            withBorderColor:[UIColor blackColor]
+            withBorderColor:[UIColor grayColor]
                 borderWidth:2.5
             backgroundColor:[UIColor clearColor]];
-            [self.gridView addSubview:view];
-            [self setupBoxAtRow:i andColumn:j inGridView:view];
+            [self.gridView addSubview:gridCellView];
+            [self setupBoxAtRow:i andColumn:j inGridView:gridCellView];
         }
     }
 }
@@ -68,28 +69,18 @@
     [gridView.heightAnchor constraintEqualToAnchor:gridView.widthAnchor].active = YES;
 }
 
--(void)setupBoxAtRow:(NSInteger)row andColumn:(NSInteger)column inGridView:(UIView *)gridView {
-
-    CGFloat width = gridView.bounds.size.width / 3;
+-(void)setupBoxAtRow:(NSInteger)row andColumn:(NSInteger)column inGridView:(UIView *)gridCellView {
 
     for (NSInteger i = 0; i < 3; i++) {
         for (NSInteger j = 0; j < 3; j++) {
-            UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-            button.frame = CGRectMake(j * width, i * width, width, width);
-            [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            [self setupView:button
-        withUserInteraction:YES
-            withBorderColor:[UIColor blackColor]
-                borderWidth:1.0
-            backgroundColor:[UIColor whiteColor]];
-            [self setupSudokuButton:button
-                      withAlignment:NSTextAlignmentCenter
-                           atBoxRow:row
-                          boxColumn:column
-                             subRow:i
-                          subColumn:j];
-
-            [gridView addSubview:button];
+            NSInteger tag = (row * 3 + i) * 9 + column * 3 + j;
+            UIButton *button = [UIButton buttonWithSudokuStyleForTag:tag
+                                                         sudokuEntry:[[self.sudoku numberAtTag:tag] integerValue]
+                                                              inGrid:gridCellView];
+            [button addTarget:self
+                       action:@selector(sudokuButtonTapped:)
+             forControlEvents:UIControlEventTouchUpInside];
+            [gridCellView addSubview:button];
         }
     }
 }
@@ -104,7 +95,7 @@
 -(void)setupSudokuButton:(UIButton *)button withAlignment:(NSTextAlignment)alignment atBoxRow:(NSInteger)row boxColumn:(NSInteger)column subRow:(NSInteger)subRow subColumn:(NSInteger)subColumn {
     button.titleLabel.textAlignment = alignment;
     button.tag = (row * 3 + subRow) * 9 + column * 3 + subColumn;
-    [button setTitle:[NSString stringWithFormat:@"%@", @((row * 3 + subRow) * 9 + column * 3 + subColumn)]
+    [button setTitle:[NSString stringWithFormat:@"%@", [self.sudoku numberAtTag:button.tag]]
             forState:UIControlStateNormal];
     [button addTarget:self
                action:@selector(sudokuButtonTapped:)

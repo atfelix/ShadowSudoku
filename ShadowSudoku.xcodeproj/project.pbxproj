@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		119742941F16AFC800039B58 /* UIButton+SudokuButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 119742931F16AFC800039B58 /* UIButton+SudokuButton.m */; };
 		119D10CD1F152ECD0091EBD9 /* SudokuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 119D10CC1F152ECD0091EBD9 /* SudokuViewController.m */; };
 		119D10D01F152F440091EBD9 /* Sudoku.m in Sources */ = {isa = PBXBuildFile; fileRef = 119D10CF1F152F440091EBD9 /* Sudoku.m */; };
 		119D10D51F1532B20091EBD9 /* debug.sudoku in Resources */ = {isa = PBXBuildFile; fileRef = 119D10D11F1532B20091EBD9 /* debug.sudoku */; };
@@ -40,6 +41,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		119742921F16AFC800039B58 /* UIButton+SudokuButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+SudokuButton.h"; sourceTree = "<group>"; };
+		119742931F16AFC800039B58 /* UIButton+SudokuButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+SudokuButton.m"; sourceTree = "<group>"; };
 		119D10CB1F152ECD0091EBD9 /* SudokuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SudokuViewController.h; path = ../SudokuViewController.h; sourceTree = "<group>"; };
 		119D10CC1F152ECD0091EBD9 /* SudokuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SudokuViewController.m; path = ../SudokuViewController.m; sourceTree = "<group>"; };
 		119D10CE1F152F440091EBD9 /* Sudoku.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sudoku.h; sourceTree = "<group>"; };
@@ -112,6 +115,8 @@
 		11D1CBE91F1415DE002D3B30 /* ShadowSudoku */ = {
 			isa = PBXGroup;
 			children = (
+				119742921F16AFC800039B58 /* UIButton+SudokuButton.h */,
+				119742931F16AFC800039B58 /* UIButton+SudokuButton.m */,
 				119D10CE1F152F440091EBD9 /* Sudoku.h */,
 				119D10CF1F152F440091EBD9 /* Sudoku.m */,
 				119D10CB1F152ECD0091EBD9 /* SudokuViewController.h */,
@@ -298,6 +303,7 @@
 				11D1CBEF1F1415DE002D3B30 /* AppDelegate.m in Sources */,
 				119D10D01F152F440091EBD9 /* Sudoku.m in Sources */,
 				11D1CBEC1F1415DE002D3B30 /* main.m in Sources */,
+				119742941F16AFC800039B58 /* UIButton+SudokuButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

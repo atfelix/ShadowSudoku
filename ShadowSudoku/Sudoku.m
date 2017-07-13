@@ -67,4 +67,43 @@
     }
 }
 
+-(NSNumber *)numberAtRow:(NSInteger)row column:(NSInteger)column {
+    NSInteger rowNumber = [[self.changingPuzzle objectAtIndex:row] integerValue];
+
+    for (long int i = 9 - column - 1; i > 0; i--) {
+        rowNumber /= 10;
+    }
+
+    return @(rowNumber % 10);
+}
+
+-(NSNumber *)numberAtTag:(NSInteger)tag {
+    return [self numberAtRow:[Sudoku rowForTag:tag]
+                      column:[Sudoku columnForTag:tag]];
+}
+
++(NSInteger)rowForTag:(NSInteger)tag {
+    return tag / 9;
+}
+
++(NSInteger)columnForTag:(NSInteger)tag {
+    return tag % 9;
+}
+
++(NSInteger)boxRowForTag:(NSInteger)tag {
+    return tag / 27;
+}
+
++(NSInteger)boxColumnForTag:(NSInteger)tag {
+    return (tag / 3) % 3;
+}
+
++(NSInteger)boxSubRowForTag:(NSInteger)tag {
+    return (tag / 9) % 3;
+}
+
++(NSInteger)boxSubColumnForTag:(NSInteger)tag {
+    return tag % 3;
+}
+
 @end
