@@ -18,6 +18,7 @@
 @property (nonatomic, strong) UIView *gridView;
 @property (nonatomic, strong) UILabel *label;
 @property (nonatomic, assign) NSInteger focusTag;
+@property (nonatomic, strong) NSMutableArray *buttons;
 
 @end
 
@@ -42,6 +43,8 @@
 
 -(void)setupSudokuGrid {
     [self setupGridView];
+
+    self.buttons = [@[] mutableCopy];
 
     for (NSInteger i = 0; i < 3; i++) {
         for (NSInteger j = 0; j < 3; j++) {
@@ -81,6 +84,7 @@
             [button addTarget:self
                        action:@selector(sudokuButtonTapped:)
              forControlEvents:UIControlEventTouchUpInside];
+            [self.buttons addObject:button];
             [gridCellView addSubview:button];
         }
     }
@@ -119,10 +123,53 @@
 }
 
 -(void)setInitialFocus {
+    self.focusTag = -1;
+
     for (NSInteger tag = 0; tag < 81; tag++) {
         if ([[self.sudoku numberAtTag:tag] integerValue] == 0) {
             self.focusTag = tag;
-            return;
+            break;
+        }
+    }
+
+    [self drawFocusElements];
+}
+
+-(void)drawFocusElements {
+    [self drawFocusBox];
+    [self drawFocusRow];
+    [self drawFocusColumn];
+}
+
+-(void)drawFocusBox {
+    for (UIButton *button in self.buttons) {
+        if ([[self.sudoku originalNumberAtTag:button.tag] integerValue] != 0) {
+            continue;
+        }
+        if ([Sudoku boxForTag:button.tag] == [Sudoku boxForTag:self.focusTag]) {
+            button.backgroundColor = [UIColor lightGrayColor];
+        }
+    }
+}
+
+-(void)drawFocusRow {
+    for (UIButton *button in self.buttons) {
+        if ([[self.sudoku originalNumberAtTag:button.tag] integerValue] != 0) {
+            continue;
+        }
+        if ([Sudoku rowForTag:button.tag] == [Sudoku rowForTag:self.focusTag]) {
+            button.backgroundColor = [UIColor lightGrayColor];
+        }
+    }
+}
+
+-(void)drawFocusColumn {
+    for (UIButton *button in self.buttons) {
+        if ([[self.sudoku originalNumberAtTag:button.tag] integerValue] != 0) {
+            continue;
+        }
+        if ([Sudoku columnForTag:button.tag] == [Sudoku columnForTag:self.focusTag]) {
+            button.backgroundColor = [UIColor lightGrayColor];
         }
     }
 }

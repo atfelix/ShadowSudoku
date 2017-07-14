@@ -77,9 +77,25 @@
     return @(rowNumber % 10);
 }
 
+-(NSNumber *)originalNumberAtRow:(NSInteger)row column:(NSInteger)column {
+    NSInteger rowNumber = [[self.originalPuzzle objectAtIndex:row] integerValue];
+
+    for (long int i = 9 - column - 1; i > 0; i--) {
+        rowNumber /= 10;
+    }
+
+    return @(rowNumber % 10);
+}
+
+
 -(NSNumber *)numberAtTag:(NSInteger)tag {
     return [self numberAtRow:[Sudoku rowForTag:tag]
                       column:[Sudoku columnForTag:tag]];
+}
+
+-(NSNumber *)originalNumberAtTag:(NSInteger)tag {
+    return [self originalNumberAtRow:[Sudoku rowForTag:tag]
+                              column:[Sudoku columnForTag:tag]];
 }
 
 +(NSInteger)rowForTag:(NSInteger)tag {
@@ -104,6 +120,10 @@
 
 +(NSInteger)boxSubColumnForTag:(NSInteger)tag {
     return tag % 3;
+}
+
++(NSInteger)boxForTag:(NSInteger)tag {
+    return [Sudoku boxRowForTag:tag] * 3 + [Sudoku boxColumnForTag:tag];
 }
 
 @end

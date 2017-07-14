@@ -12,6 +12,7 @@
 
 -(instancetype)initFromContentsOfURL: (NSURL *)url;
 -(NSNumber *)numberAtTag:(NSInteger)tag;
+-(NSNumber *)originalNumberAtTag:(NSInteger)tag;
 
 +(NSInteger)rowForTag:(NSInteger)tag;
 +(NSInteger)columnForTag:(NSInteger)tag;
@@ -19,5 +20,6 @@
 +(NSInteger)boxColumnForTag:(NSInteger)tag;
 +(NSInteger)boxSubRowForTag:(NSInteger)tag;
 +(NSInteger)boxSubColumnForTag:(NSInteger)tag;
++(NSInteger)boxForTag:(NSInteger)tag;
 
 @end
