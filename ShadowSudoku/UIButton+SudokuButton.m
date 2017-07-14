@@ -25,6 +25,28 @@
     return button;
 }
 
++(UIButton *)inputButtonForDigit:(NSInteger)digit inGrid:(UIView *)gridCellView {
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+
+    [button setButtonFrameForDigit:digit - 1 inGrid:gridCellView];
+    [button setColorsForEntry:0];
+    [button setBorderWidth:1.0];
+    [button setTitleForEntry:digit];
+
+    return button;
+}
+
++(UIButton *)arrowButtonForInteger:(NSInteger)integer inGrid:(UIView *)gridCellView {
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+
+    [button setButtonFrameForDigit:integer inGrid:gridCellView];
+    [button setColorsForEntry:0];
+    [button setBorderWidth:1.0];
+    [button setTitleForArrowInteger:integer];
+
+    return button;
+}
+
 -(void)setColorsForEntry:(NSInteger)entry {
     UIColor *titleColor = [UIColor titleColorForEntry:entry];
 
@@ -43,6 +65,14 @@
             forState:UIControlStateNormal];
 }
 
+-(void)setTitleForArrowInteger:(NSInteger)integer {
+    NSArray *arrows = @[@"↖", @"↑", @"↗", @"←", @"✖", @"→", @"↙", @"↓", @"↘"];
+
+    self.titleLabel.textAlignment = NSTextAlignmentCenter;
+    [self setTitle:arrows[integer]
+          forState:UIControlStateNormal];
+}
+
 -(void)setButtonTag:(NSInteger)tag {
     NSInteger boxRow = [Sudoku boxRowForTag:tag], boxColumn = [Sudoku boxColumnForTag:tag];
     NSInteger boxSubRow = [Sudoku boxSubRowForTag:tag], boxSubColumn = [Sudoku boxSubColumnForTag:tag];
@@ -55,6 +85,16 @@
 
     self.frame = CGRectMake(boxSubColumn * width,
                             boxSubRow * width,
+                            width,
+                            width);
+}
+
+-(void)setButtonFrameForDigit:(NSInteger)digit inGrid:(UIView *)gridCellView {
+    CGFloat width = gridCellView.frame.size.width / 3;
+    NSInteger row = digit / 3, column = digit % 3;
+
+    self.frame = CGRectMake(column * width,
+                            row * width,
                             width,
                             width);
 }

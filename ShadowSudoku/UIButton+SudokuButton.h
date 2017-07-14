@@ -11,5 +11,7 @@
 @interface UIButton (SudokuButton)
 
 +(UIButton *)buttonWithSudokuStyleForTag:(NSInteger)tag sudokuEntry:(NSInteger)entry inGrid:(UIView *)gridCellView;
++(UIButton *)inputButtonForDigit:(NSInteger)digit inGrid:(UIView *)gridCellView;
++(UIButton *)arrowButtonForInteger:(NSInteger)integer inGrid:(UIView *)gridCellView;
 
 @end

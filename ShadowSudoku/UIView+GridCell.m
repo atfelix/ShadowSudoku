@@ -11,7 +11,20 @@
 @implementation UIView (GridCell)
 
 +(UIView *)viewWithSudokuCellStyleInSuperView:(UIView *)superView atBoxRow:(NSInteger)row boxColumn:(NSInteger)column {
-    CGFloat width = (superView.bounds.size.width - 20) / 3;
+    return [UIView viewWithSudokuCellStyleInSuperView:superView
+                                            withWidth:(superView.bounds.size.width - 20) / 3
+                                             atBoxRow:row
+                                            boxColumn:column];
+}
+
++(UIView *)viewWithButtonGridCellStyleInSuperView:(UIView *)superView atBoxRow:(NSInteger)row boxColumn:(NSInteger)column {
+    return [UIView viewWithSudokuCellStyleInSuperView:superView
+                                            withWidth:(superView.bounds.size.width - 20) / 2.5
+                                             atBoxRow:row
+                                            boxColumn:column];
+}
+
++(UIView *)viewWithSudokuCellStyleInSuperView:(UIView *)superView withWidth:(CGFloat)width atBoxRow:(NSInteger)row boxColumn:(NSInteger)column {
     UIView *gridCellView = [[UIView alloc] initWithFrame:CGRectMake(column * width, row * width, width, width)];
     gridCellView.userInteractionEnabled = YES;
     [gridCellView setupViewWithUserInteraction: YES

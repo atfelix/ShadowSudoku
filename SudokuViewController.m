@@ -17,7 +17,6 @@
 @property (nonatomic, strong) Sudoku *sudoku;
 @property (nonatomic, strong) UIView *gridView;
 @property (nonatomic, strong) UILabel *label;
-@property (nonatomic, strong) NSMutableArray *buttons;
 
 @end
 
@@ -28,6 +27,8 @@
 
     [self setupSudoku];
     [self setupSudokuGrid];
+    [self setupDigitButtons];
+    [self setupArrowButtons];
 }
 
 -(void)setupSudoku {
@@ -79,6 +80,38 @@
              forControlEvents:UIControlEventTouchUpInside];
             [gridCellView addSubview:button];
         }
+    }
+}
+
+-(void)setupDigitButtons {
+    UIView *gridCellView = [UIView viewWithButtonGridCellStyleInSuperView:self.view
+                                                             atBoxRow:0
+                                                            boxColumn:0];
+    gridCellView.frame = CGRectMake(10,
+                                    self.view.bounds.size.height - 10 - gridCellView.frame.size.height,
+                                    gridCellView.frame.size.height,
+                                    gridCellView.frame.size.width);
+    [self.view addSubview:gridCellView];
+
+    for (NSInteger digit = 1; digit < 10; digit++) {
+        UIButton *button = [UIButton inputButtonForDigit:digit inGrid:gridCellView];
+        [gridCellView addSubview:button];
+    }
+}
+
+-(void)setupArrowButtons {
+    UIView *gridCellView = [UIView viewWithButtonGridCellStyleInSuperView:self.view
+                                                                 atBoxRow:0
+                                                                boxColumn:0];
+    gridCellView.frame = CGRectMake(self.view.bounds.size.width - 10 - gridCellView.frame.size.width,
+                                    self.view.bounds.size.height - 10 - gridCellView.frame.size.height,
+                                    gridCellView.frame.size.height,
+                                    gridCellView.frame.size.width);
+    [self.view addSubview:gridCellView];
+
+    for (NSInteger arrowInt = 0; arrowInt < 9; arrowInt++) {
+        UIButton *button = [UIButton arrowButtonForInteger:arrowInt inGrid:gridCellView];
+        [gridCellView addSubview:button];
     }
 }
 

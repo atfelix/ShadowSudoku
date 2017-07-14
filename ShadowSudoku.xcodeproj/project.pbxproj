@@ -98,6 +98,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		11B15A9E1F17F92900E98D73 /* UIKit Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				119742921F16AFC800039B58 /* UIButton+SudokuButton.h */,
+				119742931F16AFC800039B58 /* UIButton+SudokuButton.m */,
+				11B15A981F17E33500E98D73 /* UIColor+SudokuColors.h */,
+				11B15A991F17E33500E98D73 /* UIColor+SudokuColors.m */,
+				11B15A9B1F17EB6000E98D73 /* UIView+GridCell.h */,
+				11B15A9C1F17EB6000E98D73 /* UIView+GridCell.m */,
+			);
+			name = "UIKit Extensions";
+			sourceTree = "<group>";
+		};
 		11D1CBDE1F1415DE002D3B30 = {
 			isa = PBXGroup;
 			children = (
@@ -121,22 +134,17 @@
 		11D1CBE91F1415DE002D3B30 /* ShadowSudoku */ = {
 			isa = PBXGroup;
 			children = (
-				11B15A981F17E33500E98D73 /* UIColor+SudokuColors.h */,
-				11B15A991F17E33500E98D73 /* UIColor+SudokuColors.m */,
-				119742921F16AFC800039B58 /* UIButton+SudokuButton.h */,
-				119742931F16AFC800039B58 /* UIButton+SudokuButton.m */,
 				119D10CE1F152F440091EBD9 /* Sudoku.h */,
 				119D10CF1F152F440091EBD9 /* Sudoku.m */,
 				119D10CB1F152ECD0091EBD9 /* SudokuViewController.h */,
 				119D10CC1F152ECD0091EBD9 /* SudokuViewController.m */,
-				11B15A9B1F17EB6000E98D73 /* UIView+GridCell.h */,
-				11B15A9C1F17EB6000E98D73 /* UIView+GridCell.m */,
 				11D1CBED1F1415DE002D3B30 /* AppDelegate.h */,
 				11D1CBEE1F1415DE002D3B30 /* AppDelegate.m */,
 				11D1CBF31F1415DE002D3B30 /* Main.storyboard */,
 				11D1CBF61F1415DE002D3B30 /* Assets.xcassets */,
 				11D1CBF81F1415DE002D3B30 /* LaunchScreen.storyboard */,
 				11D1CBFB1F1415DE002D3B30 /* Info.plist */,
+				11B15A9E1F17F92900E98D73 /* UIKit Extensions */,
 				11D1CBEA1F1415DE002D3B30 /* Supporting Files */,
 			);
 			path = ShadowSudoku;

@@ -11,5 +11,6 @@
 @interface UIView (GridCell)
 
 +(UIView *)viewWithSudokuCellStyleInSuperView:(UIView *)superView atBoxRow:(NSInteger)row boxColumn:(NSInteger)column;
++(UIView *)viewWithButtonGridCellStyleInSuperView:(UIView *)superView atBoxRow:(NSInteger)row boxColumn:(NSInteger)column;
 
 @end
