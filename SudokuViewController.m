@@ -10,6 +10,7 @@
 
 #import "Sudoku.h"
 #import "UIButton+SudokuButton.h"
+#import "UIColor+SudokuColors.h"
 #import "UIView+GridCell.h"
 
 @interface SudokuViewController ()
@@ -32,7 +33,6 @@
     [self setupDigitButtons];
     [self setupArrowButtons];
     [self setInitialFocus];
-
 }
 
 -(void)setupSudoku {
@@ -55,6 +55,10 @@
             [self setupBoxAtRow:i andColumn:j inGridView:gridCellView];
         }
     }
+
+    [self.buttons sortUsingComparator:^NSComparisonResult(UIButton* a, UIButton* b) {
+        return (NSComparisonResult) (a.tag > b.tag);
+    }];
 }
 
 -(void)setupGridView {
@@ -136,9 +140,10 @@
 }
 
 -(void)drawFocusElements {
-    [self drawFocusBox];
     [self drawFocusRow];
     [self drawFocusColumn];
+    [self drawFocusBox];
+    [self drawFocusBackground];
 }
 
 -(void)drawFocusBox {
@@ -158,7 +163,7 @@
             continue;
         }
         if ([Sudoku rowForTag:button.tag] == [Sudoku rowForTag:self.focusTag]) {
-            button.backgroundColor = [UIColor lightGrayColor];
+            button.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.5];
         }
     }
 }
@@ -169,13 +174,64 @@
             continue;
         }
         if ([Sudoku columnForTag:button.tag] == [Sudoku columnForTag:self.focusTag]) {
-            button.backgroundColor = [UIColor lightGrayColor];
+            button.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.5];
         }
     }
 }
 
+-(void)drawFocusBackground {
+    if ([[self.sudoku originalNumberAtTag:self.focusTag] integerValue] == 0) {
+        ((UIButton *)self.buttons[self.focusTag]).backgroundColor = [[UIColor cyanColor] colorWithAlphaComponent:0.5];
+    }
+}
+
 -(void)sudokuButtonTapped:(UIButton *)sender {
-    NSLog(@"%@", @(sender.tag));
+    if ([[self.sudoku originalNumberAtTag:sender.tag] integerValue] != 0) {
+        return;
+    }
+
+    [self clearFocusHighlights];
+    self.focusTag = sender.tag;
+    [self drawFocusElements];
+}
+
+-(void)clearFocusHighlights {
+    [self clearFocusBox];
+    [self clearFocusRow];
+    [self clearFocusColumn];
+}
+
+-(void)clearFocusBox {
+    for (UIButton *button in self.buttons) {
+        if ([[self.sudoku originalNumberAtTag:button.tag] integerValue] != 0) {
+            continue;
+        }
+        if ([Sudoku boxForTag:button.tag] == [Sudoku boxForTag:self.focusTag]) {
+            button.backgroundColor = [UIColor backgroundColorForEntry:0];
+        }
+    }
+}
+
+-(void)clearFocusRow {
+    for (UIButton *button in self.buttons) {
+        if ([[self.sudoku originalNumberAtTag:button.tag] integerValue] != 0) {
+            continue;
+        }
+        if ([Sudoku rowForTag:button.tag] == [Sudoku rowForTag:self.focusTag]) {
+            button.backgroundColor = [UIColor backgroundColorForEntry:0];
+        }
+    }
+}
+
+-(void)clearFocusColumn {
+    for (UIButton *button in self.buttons) {
+        if ([[self.sudoku originalNumberAtTag:button.tag] integerValue] != 0) {
+            continue;
+        }
+        if ([Sudoku columnForTag:button.tag] == [Sudoku columnForTag:self.focusTag]) {
+            button.backgroundColor = [UIColor backgroundColorForEntry:0];
+        }
+    }
 }
 
 @end
