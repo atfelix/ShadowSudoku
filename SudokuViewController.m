@@ -17,6 +17,7 @@
 @property (nonatomic, strong) Sudoku *sudoku;
 @property (nonatomic, strong) UIView *gridView;
 @property (nonatomic, strong) UILabel *label;
+@property (nonatomic, assign) NSInteger focusTag;
 
 @end
 
@@ -29,6 +30,8 @@
     [self setupSudokuGrid];
     [self setupDigitButtons];
     [self setupArrowButtons];
+    [self setInitialFocus];
+
 }
 
 -(void)setupSudoku {
@@ -112,6 +115,15 @@
     for (NSInteger arrowInt = 0; arrowInt < 9; arrowInt++) {
         UIButton *button = [UIButton arrowButtonForInteger:arrowInt inGrid:gridCellView];
         [gridCellView addSubview:button];
+    }
+}
+
+-(void)setInitialFocus {
+    for (NSInteger tag = 0; tag < 81; tag++) {
+        if ([[self.sudoku numberAtTag:tag] integerValue] == 0) {
+            self.focusTag = tag;
+            return;
+        }
     }
 }
 
