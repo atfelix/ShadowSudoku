@@ -122,6 +122,9 @@
 
     for (NSInteger arrowInt = 0; arrowInt < 9; arrowInt++) {
         UIButton *button = [UIButton arrowButtonForInteger:arrowInt inGrid:gridCellView];
+        [button addTarget:self
+                   action:@selector(arrowButtonTapped:)
+         forControlEvents:UIControlEventTouchUpInside];
         [gridCellView addSubview:button];
     }
 }
@@ -232,6 +235,23 @@
             button.backgroundColor = [UIColor backgroundColorForEntry:0];
         }
     }
+}
+
+-(void)arrowButtonTapped:(UIButton *)sender {
+    NSInteger tag = sender.tag - 200;
+    NSInteger horizontalMove = tag % 3 - 1, verticalMove = tag / 3 - 1;
+    NSInteger row = self.focusTag / 9, column = self.focusTag % 9;
+
+    [self clearFocusHighlights];
+
+    do {
+        row = (row + verticalMove) % 9;
+        column = (column + horizontalMove) % 9;
+        self.focusTag = row * 9 + column;
+
+    } while ([[self.sudoku originalNumberAtTag:self.focusTag] integerValue] != 0);
+
+    [self drawFocusElements];
 }
 
 @end

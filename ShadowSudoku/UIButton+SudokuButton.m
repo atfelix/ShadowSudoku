@@ -11,6 +11,7 @@
 #import "Sudoku.h"
 #import "UIColor+SudokuColors.h"
 
+
 @implementation UIButton (SudokuButton)
 
 +(UIButton *)buttonWithSudokuStyleForTag:(NSInteger)tag sudokuEntry:(NSInteger)entry inGrid:(UIView *)gridCellView {
@@ -43,6 +44,7 @@
     [button setColorsForEntry:0];
     [button setBorderWidth:1.0];
     [button setTitleForArrowInteger:integer];
+    button.tag = 200 + integer;
 
     return button;
 }
