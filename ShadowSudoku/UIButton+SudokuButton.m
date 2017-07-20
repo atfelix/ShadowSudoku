@@ -33,6 +33,7 @@
     [button setColorsForEntry:0];
     [button setBorderWidth:1.0];
     [button setTitleForEntry:digit];
+    button.tag = 100 + digit;
 
     return button;
 }

@@ -13,6 +13,7 @@
 -(instancetype)initFromContentsOfURL: (NSURL *)url;
 -(NSNumber *)numberAtTag:(NSInteger)tag;
 -(NSNumber *)originalNumberAtTag:(NSInteger)tag;
+-(void)setNumberAtTag:(NSInteger)tag toNumber:(NSInteger)number;
 
 +(NSInteger)rowForTag:(NSInteger)tag;
 +(NSInteger)columnForTag:(NSInteger)tag;

@@ -70,7 +70,7 @@
 -(NSNumber *)numberAtRow:(NSInteger)row column:(NSInteger)column {
     NSInteger rowNumber = [[self.changingPuzzle objectAtIndex:row] integerValue];
 
-    for (long int i = 9 - column - 1; i > 0; i--) {
+    for (NSInteger i = 8 - column; i > 0; i--) {
         rowNumber /= 10;
     }
 
@@ -80,7 +80,7 @@
 -(NSNumber *)originalNumberAtRow:(NSInteger)row column:(NSInteger)column {
     NSInteger rowNumber = [[self.originalPuzzle objectAtIndex:row] integerValue];
 
-    for (long int i = 9 - column - 1; i > 0; i--) {
+    for (NSInteger i = 8 - column; i > 0; i--) {
         rowNumber /= 10;
     }
 
@@ -91,6 +91,29 @@
 -(NSNumber *)numberAtTag:(NSInteger)tag {
     return [self numberAtRow:[Sudoku rowForTag:tag]
                       column:[Sudoku columnForTag:tag]];
+}
+
+-(void)setNumberAtTag:(NSInteger)tag toNumber:(NSInteger)number {
+    if ([[self originalNumberAtTag:tag] integerValue] != 0) {
+        return;
+    }
+
+    [self setNumberAtRow:[Sudoku rowForTag:tag]
+                  column:[Sudoku columnForTag:tag]
+                toNumber:number];
+}
+
+-(void)setNumberAtRow:(NSInteger)row column:(NSInteger)column toNumber:(NSInteger)number {
+    NSInteger numberAtRow = [[self.changingPuzzle objectAtIndex:row] integerValue];
+    NSInteger factorOfTen = 1;
+
+    for (NSInteger i = 8 - column; i > 0; i--) {
+        factorOfTen *= 10;
+    }
+
+    numberAtRow -= factorOfTen * [[self numberAtRow:row column:column] integerValue];
+    numberAtRow += factorOfTen * number;
+    self.changingPuzzle[row] = @(numberAtRow);
 }
 
 -(NSNumber *)originalNumberAtTag:(NSInteger)tag {

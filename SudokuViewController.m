@@ -106,6 +106,9 @@
 
     for (NSInteger digit = 1; digit < 10; digit++) {
         UIButton *button = [UIButton inputButtonForDigit:digit inGrid:gridCellView];
+        [button addTarget:self
+                   action:@selector(digitButtonTapped:)
+         forControlEvents:UIControlEventTouchUpInside];
         [gridCellView addSubview:button];
     }
 }
@@ -251,7 +254,19 @@
 
     } while ([[self.sudoku originalNumberAtTag:self.focusTag] integerValue] != 0);
 
+    if (tag == 4) {
+        [self.sudoku setNumberAtTag:self.focusTag toNumber:0];
+        UIButton *button = self.buttons[self.focusTag];
+        [button setTitle:@"" forState:UIControlStateNormal];
+    }
+
     [self drawFocusElements];
+}
+
+-(void)digitButtonTapped:(UIButton *)sender {
+    [self.sudoku setNumberAtTag:self.focusTag toNumber:sender.tag - 100];
+    UIButton *button = self.buttons[self.focusTag];
+    [button setTitle:sender.titleLabel.text forState:UIControlStateNormal];
 }
 
 @end
