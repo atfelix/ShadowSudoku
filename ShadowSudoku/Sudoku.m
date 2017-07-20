@@ -121,6 +121,49 @@
                               column:[Sudoku columnForTag:tag]];
 }
 
+-(NSSet *)possibleEntriesForTag:(NSInteger)tag {
+    NSMutableSet *set = [NSMutableSet setWithArray:@[@1, @2, @3, @4, @5, @6, @7, @8, @9]];
+
+    [self filterEntriesInSet:set basedOnBoxForTag:tag];
+    [self filterEntriesInSet:set basedOnRowForTag:tag];
+    [self filterEntriesInSet:set basedOnColumnForTag:tag];
+
+    return [set copy];
+}
+
+-(void)filterEntriesInSet:(NSMutableSet *)set basedOnRowForTag:(NSInteger)tag {
+    NSInteger row = [Sudoku rowForTag:tag];
+
+    for (NSInteger column = 0; column < 9; column++) {
+        if ([[self originalNumberAtRow:row column:column] integerValue] != 0) {
+            [set removeObject:[self originalNumberAtRow:row column:column]];
+        }
+    }
+}
+
+-(void)filterEntriesInSet:(NSMutableSet *)set basedOnColumnForTag:(NSInteger)tag {
+    NSInteger column = [Sudoku columnForTag:tag];
+
+    for (NSInteger row = 0; row < 9; row ++) {
+        if ([[self originalNumberAtRow:row column:column] integerValue] != 0) {
+            [set removeObject:[self originalNumberAtRow:row column:column]];
+        }
+    }
+}
+
+-(void)filterEntriesInSet:(NSMutableSet *)set basedOnBoxForTag:(NSInteger)tag {
+    NSInteger box = [Sudoku boxForTag:tag];
+    NSInteger boxRow = box / 3, boxColumn = box % 3;
+
+    for (NSInteger r = 3 * boxRow; r < 3 * boxRow + 3; r++) {
+        for (NSInteger c = 3 * boxColumn; c < 3 * boxColumn + 3; c++) {
+            if ([[self originalNumberAtRow:r column:c] integerValue] != 0) {
+                [set removeObject:[self originalNumberAtRow:r column:c]];
+            }
+        }
+    }
+}
+
 +(NSInteger)rowForTag:(NSInteger)tag {
     return tag / 9;
 }

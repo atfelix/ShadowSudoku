@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+@class Sudoku;
+
 @interface UIButton (SudokuButton)
 
-+(UIButton *)buttonWithSudokuStyleForTag:(NSInteger)tag sudokuEntry:(NSInteger)entry inGrid:(UIView *)gridCellView;
++(UIButton *)buttonWithSudokuStyleForTag:(NSInteger)tag sudoku:(Sudoku *)sudoku inGrid:(UIView *)gridCellView;
 +(UIButton *)inputButtonForDigit:(NSInteger)digit inGrid:(UIView *)gridCellView;
 +(UIButton *)arrowButtonForInteger:(NSInteger)integer inGrid:(UIView *)gridCellView;
 

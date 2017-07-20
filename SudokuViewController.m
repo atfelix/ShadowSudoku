@@ -83,7 +83,7 @@
         for (NSInteger j = 0; j < 3; j++) {
             NSInteger tag = (row * 3 + i) * 9 + column * 3 + j;
             UIButton *button = [UIButton buttonWithSudokuStyleForTag:tag
-                                                         sudokuEntry:[[self.sudoku numberAtTag:tag] integerValue]
+                                                         sudoku:self.sudoku
                                                               inGrid:gridCellView];
             [button addTarget:self
                        action:@selector(sudokuButtonTapped:)

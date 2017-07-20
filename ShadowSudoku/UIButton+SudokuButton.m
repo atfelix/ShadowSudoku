@@ -14,14 +14,16 @@
 
 @implementation UIButton (SudokuButton)
 
-+(UIButton *)buttonWithSudokuStyleForTag:(NSInteger)tag sudokuEntry:(NSInteger)entry inGrid:(UIView *)gridCellView {
++(UIButton *)buttonWithSudokuStyleForTag:(NSInteger)tag sudoku:(Sudoku *)sudoku inGrid:(UIView *)gridCellView {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    NSInteger entry = [[sudoku numberAtTag:tag] integerValue];
 
     [button setButtonFrameForTag:tag inGrid:gridCellView];
     [button setColorsForEntry:entry];
     [button setBorderWidth:1.0];
     [button setTitleForEntry:entry];
     [button setButtonTag:tag];
+    [button setLabelsForTag:tag inSudoku:sudoku];
 
     return button;
 }
@@ -100,6 +102,28 @@
                             row * width,
                             width,
                             width);
+}
+
+-(void)setLabelsForTag:(NSInteger)tag inSudoku:(Sudoku *)sudoku {
+    NSInteger entry = [[sudoku numberAtTag:tag] integerValue];
+    NSSet *possibleEntries = [sudoku possibleEntriesForTag:tag];
+
+    if (entry != 0) {
+        return;
+    }
+
+    CGFloat width = self.bounds.size.width / 3;
+
+    for (NSInteger i = 0; i < 3; i++) {
+        for (NSInteger j = 0; j < 3; j++) {
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(j * width, i * width, width, width)];
+            NSInteger entry = 3 * i + j + 1;
+            label.text = [NSString stringWithFormat:@"%@", ([possibleEntries containsObject:@(entry)]) ? @(entry) : @""];
+            label.font = [UIFont systemFontOfSize:12];
+            label.textAlignment = NSTextAlignmentCenter;
+            [self addSubview:label];
+        }
+    }
 }
 
 @end
