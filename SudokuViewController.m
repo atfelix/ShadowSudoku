@@ -258,6 +258,7 @@
         [self.sudoku setNumberAtTag:self.focusTag toNumber:0];
         UIButton *button = self.buttons[self.focusTag];
         [button setTitle:@"" forState:UIControlStateNormal];
+        [button resetSubviewsWithAlpha:1.0];
     }
 
     [self drawFocusElements];
@@ -267,6 +268,7 @@
     [self.sudoku setNumberAtTag:self.focusTag toNumber:sender.tag - 100];
     UIButton *button = self.buttons[self.focusTag];
     [button setTitle:sender.titleLabel.text forState:UIControlStateNormal];
+    [button resetSubviewsWithAlpha:0.0];
 }
 
 @end

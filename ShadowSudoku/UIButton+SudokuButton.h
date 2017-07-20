@@ -16,4 +16,6 @@
 +(UIButton *)inputButtonForDigit:(NSInteger)digit inGrid:(UIView *)gridCellView;
 +(UIButton *)arrowButtonForInteger:(NSInteger)integer inGrid:(UIView *)gridCellView;
 
+-(void)resetSubviewsWithAlpha:(CGFloat)alpha;
+
 @end

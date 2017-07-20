@@ -121,7 +121,16 @@
             label.text = [NSString stringWithFormat:@"%@", ([possibleEntries containsObject:@(entry)]) ? @(entry) : @""];
             label.font = [UIFont systemFontOfSize:12];
             label.textAlignment = NSTextAlignmentCenter;
+            label.tag = 300 + entry;
             [self addSubview:label];
+        }
+    }
+}
+
+-(void)resetSubviewsWithAlpha:(CGFloat)alpha {
+    for (UIView *view in self.subviews) {
+        if (view.tag > 300) {
+            view.alpha = alpha;
         }
     }
 }
