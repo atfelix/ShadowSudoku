@@ -10,6 +10,9 @@
 
 @interface Sudoku : NSObject
 
+@property (class, nonatomic, assign, readonly) NSInteger size;
+@property (class, nonatomic, assign, readonly) NSInteger baseSize;
+
 -(instancetype)initFromContentsOfURL: (NSURL *)url;
 -(NSNumber *)numberAtTag:(NSInteger)tag;
 -(NSNumber *)originalNumberAtTag:(NSInteger)tag;

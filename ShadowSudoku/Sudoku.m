@@ -17,6 +17,17 @@
 
 @implementation Sudoku
 
+static NSInteger _size = 9;
+static NSInteger _baseSize = 3;
+
++(NSInteger)size {
+    return _size;
+}
+
++(NSInteger)baseSize {
+    return _baseSize;
+}
+
 -(instancetype)initFromContentsOfURL:(NSURL *)url {
     self = [super init];
     if (self) {
@@ -56,31 +67,29 @@
 
     NSArray *rowsArray = [sudokuString componentsSeparatedByString:@"\n"];
 
-    if (rowsArray.count < 10) {
+    if (rowsArray.count < Sudoku.size) {
         puzzle = nil;
         return;
     }
 
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i < Sudoku.size; i++) {
         NSString *row = rowsArray[i];
         [puzzle addObject:[numberFormatter numberFromString:row]];
     }
 }
 
 -(NSNumber *)numberAtRow:(NSInteger)row column:(NSInteger)column {
-    NSInteger rowNumber = [[self.changingPuzzle objectAtIndex:row] integerValue];
-
-    for (NSInteger i = 8 - column; i > 0; i--) {
-        rowNumber /= 10;
-    }
-
-    return @(rowNumber % 10);
+    return [self numberAtRow:row column:column inGrid:self.changingPuzzle];
 }
 
 -(NSNumber *)originalNumberAtRow:(NSInteger)row column:(NSInteger)column {
-    NSInteger rowNumber = [[self.originalPuzzle objectAtIndex:row] integerValue];
+    return [self numberAtRow:row column:column inGrid:self.originalPuzzle];
+}
 
-    for (NSInteger i = 8 - column; i > 0; i--) {
+-(NSNumber *)numberAtRow:(NSInteger)row column:(NSInteger)column inGrid:(NSArray *) grid {
+    NSInteger rowNumber = [[grid objectAtIndex:row] integerValue];
+
+    for (NSInteger i = Sudoku.size - 1 - column; i > 0; i--) {
         rowNumber /= 10;
     }
 
@@ -122,7 +131,11 @@
 }
 
 -(NSSet *)possibleEntriesForTag:(NSInteger)tag {
-    NSMutableSet *set = [NSMutableSet setWithArray:@[@1, @2, @3, @4, @5, @6, @7, @8, @9]];
+    NSMutableSet *set = [NSMutableSet set];
+
+    for (NSInteger i = 1; i <= Sudoku.size; i++) {
+        [set addObject:@(i)];
+    }
 
     [self filterEntriesInSet:set basedOnBoxForTag:tag];
     [self filterEntriesInSet:set basedOnRowForTag:tag];
@@ -134,7 +147,7 @@
 -(void)filterEntriesInSet:(NSMutableSet *)set basedOnRowForTag:(NSInteger)tag {
     NSInteger row = [Sudoku rowForTag:tag];
 
-    for (NSInteger column = 0; column < 9; column++) {
+    for (NSInteger column = 0; column < Sudoku.size; column++) {
         if ([[self originalNumberAtRow:row column:column] integerValue] != 0) {
             [set removeObject:[self originalNumberAtRow:row column:column]];
         }
@@ -144,7 +157,7 @@
 -(void)filterEntriesInSet:(NSMutableSet *)set basedOnColumnForTag:(NSInteger)tag {
     NSInteger column = [Sudoku columnForTag:tag];
 
-    for (NSInteger row = 0; row < 9; row ++) {
+    for (NSInteger row = 0; row < Sudoku.size; row ++) {
         if ([[self originalNumberAtRow:row column:column] integerValue] != 0) {
             [set removeObject:[self originalNumberAtRow:row column:column]];
         }
@@ -153,43 +166,44 @@
 
 -(void)filterEntriesInSet:(NSMutableSet *)set basedOnBoxForTag:(NSInteger)tag {
     NSInteger box = [Sudoku boxForTag:tag];
-    NSInteger boxRow = box / 3, boxColumn = box % 3;
+    NSInteger boxRow = box / Sudoku.baseSize, boxColumn = box % Sudoku.baseSize;
+    NSInteger startRow = Sudoku.baseSize * boxRow, startColumn = Sudoku.baseSize * boxColumn;
 
-    for (NSInteger r = 3 * boxRow; r < 3 * boxRow + 3; r++) {
-        for (NSInteger c = 3 * boxColumn; c < 3 * boxColumn + 3; c++) {
-            if ([[self originalNumberAtRow:r column:c] integerValue] != 0) {
-                [set removeObject:[self originalNumberAtRow:r column:c]];
+    for (NSInteger r = 0; r < Sudoku.baseSize; r++) {
+        for (NSInteger c = 0; c < Sudoku.baseSize; c++) {
+            if ([[self originalNumberAtRow:startRow + r column:startColumn + c] integerValue] != 0) {
+                [set removeObject:[self originalNumberAtRow:startRow + r column:startColumn + c]];
             }
         }
     }
 }
 
 +(NSInteger)rowForTag:(NSInteger)tag {
-    return tag / 9;
+    return tag / Sudoku.size;
 }
 
 +(NSInteger)columnForTag:(NSInteger)tag {
-    return tag % 9;
+    return tag % Sudoku.baseSize;
 }
 
 +(NSInteger)boxRowForTag:(NSInteger)tag {
-    return tag / 27;
+    return tag / Sudoku.size / Sudoku.baseSize;
 }
 
 +(NSInteger)boxColumnForTag:(NSInteger)tag {
-    return (tag / 3) % 3;
+    return (tag / Sudoku.baseSize) % Sudoku.baseSize;
 }
 
 +(NSInteger)boxSubRowForTag:(NSInteger)tag {
-    return (tag / 9) % 3;
+    return (tag / Sudoku.size) % Sudoku.baseSize;
 }
 
 +(NSInteger)boxSubColumnForTag:(NSInteger)tag {
-    return tag % 3;
+    return tag % Sudoku.baseSize;
 }
 
 +(NSInteger)boxForTag:(NSInteger)tag {
-    return [Sudoku boxRowForTag:tag] * 3 + [Sudoku boxColumnForTag:tag];
+    return [Sudoku boxRowForTag:tag] * Sudoku.baseSize + [Sudoku boxColumnForTag:tag];
 }
 
 @end
