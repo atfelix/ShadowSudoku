@@ -46,8 +46,8 @@
 
     self.buttons = [@[] mutableCopy];
 
-    for (NSInteger i = 0; i < 3; i++) {
-        for (NSInteger j = 0; j < 3; j++) {
+    for (NSInteger i = 0; i < Sudoku.baseSize; i++) {
+        for (NSInteger j = 0; j < Sudoku.baseSize; j++) {
             UIView *gridCellView = [UIView viewWithSudokuCellStyleInSuperView:self.view
                                                                      atBoxRow:i
                                                                     boxColumn:j];
@@ -79,9 +79,9 @@
 
 -(void)setupBoxAtRow:(NSInteger)row andColumn:(NSInteger)column inGridView:(UIView *)gridCellView {
 
-    for (NSInteger i = 0; i < 3; i++) {
-        for (NSInteger j = 0; j < 3; j++) {
-            NSInteger tag = (row * 3 + i) * 9 + column * 3 + j;
+    for (NSInteger i = 0; i < Sudoku.baseSize; i++) {
+        for (NSInteger j = 0; j < Sudoku.baseSize; j++) {
+            NSInteger tag = (row * Sudoku.baseSize + i) * Sudoku.size + column * Sudoku.baseSize + j;
             UIButton *button = [UIButton buttonWithSudokuStyleForTag:tag
                                                          sudoku:self.sudoku
                                                               inGrid:gridCellView];
@@ -104,7 +104,7 @@
                                     gridCellView.frame.size.width);
     [self.view addSubview:gridCellView];
 
-    for (NSInteger digit = 1; digit < 10; digit++) {
+    for (NSInteger digit = 1; digit < Sudoku.size + 1; digit++) {
         UIButton *button = [UIButton inputButtonForDigit:digit inGrid:gridCellView];
         [button addTarget:self
                    action:@selector(digitButtonTapped:)
@@ -123,7 +123,7 @@
                                     gridCellView.frame.size.width);
     [self.view addSubview:gridCellView];
 
-    for (NSInteger arrowInt = 0; arrowInt < 9; arrowInt++) {
+    for (NSInteger arrowInt = 0; arrowInt < Sudoku.size; arrowInt++) {
         UIButton *button = [UIButton arrowButtonForInteger:arrowInt inGrid:gridCellView];
         [button addTarget:self
                    action:@selector(arrowButtonTapped:)
@@ -135,7 +135,7 @@
 -(void)setInitialFocus {
     self.focusTag = -1;
 
-    for (NSInteger tag = 0; tag < 81; tag++) {
+    for (NSInteger tag = 0; tag < Sudoku.size * Sudoku.size; tag++) {
         if ([[self.sudoku numberAtTag:tag] integerValue] == 0) {
             self.focusTag = tag;
             break;
@@ -242,19 +242,20 @@
 
 -(void)arrowButtonTapped:(UIButton *)sender {
     NSInteger tag = sender.tag - 200;
-    NSInteger horizontalMove = tag % 3 - 1, verticalMove = tag / 3 - 1;
-    NSInteger row = self.focusTag / 9, column = self.focusTag % 9;
+    NSInteger size = Sudoku.size, baseSize = Sudoku.baseSize;
+    NSInteger horizontalMove = tag % baseSize - 1, verticalMove = tag / baseSize - 1;
+    NSInteger row = self.focusTag / size, column = self.focusTag % size;
 
     [self clearFocusHighlights];
 
     do {
-        row = (row + verticalMove + 9) % 9;
-        column = (column + horizontalMove + 9) % 9;
-        self.focusTag = row * 9 + column;
+        row = (row + verticalMove + size) % size;
+        column = (column + horizontalMove + size) % size;
+        self.focusTag = row * size + column;
 
     } while ([[self.sudoku originalNumberAtTag:self.focusTag] integerValue] != 0);
 
-    if (tag == 4) {
+    if (tag == size / 2) {
         [self.sudoku setNumberAtTag:self.focusTag toNumber:0];
         UIButton *button = self.buttons[self.focusTag];
         [button setTitle:@"" forState:UIControlStateNormal];
