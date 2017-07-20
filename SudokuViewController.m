@@ -248,8 +248,8 @@
     [self clearFocusHighlights];
 
     do {
-        row = (row + verticalMove) % 9;
-        column = (column + horizontalMove) % 9;
+        row = (row + verticalMove + 9) % 9;
+        column = (column + horizontalMove + 9) % 9;
         self.focusTag = row * 9 + column;
 
     } while ([[self.sudoku originalNumberAtTag:self.focusTag] integerValue] != 0);
