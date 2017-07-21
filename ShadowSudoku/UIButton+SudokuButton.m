@@ -35,7 +35,7 @@
     [button setColorsForEntry:0];
     [button setBorderWidth:1.0];
     [button setTitleForEntry:digit];
-    button.tag = 100 + digit;
+    button.tag = digit;
 
     return button;
 }
@@ -47,7 +47,7 @@
     [button setColorsForEntry:0];
     [button setBorderWidth:1.0];
     [button setTitleForArrowInteger:integer];
-    button.tag = 200 + integer;
+    button.tag = integer;
 
     return button;
 }
@@ -121,7 +121,7 @@
             label.text = [NSString stringWithFormat:@"%@", ([possibleEntries containsObject:@(entry)]) ? @(entry) : @""];
             label.font = [UIFont systemFontOfSize:12];
             label.textAlignment = NSTextAlignmentCenter;
-            label.tag = 300 + entry;
+            label.tag = entry + 1;
             [self addSubview:label];
         }
     }
@@ -129,7 +129,7 @@
 
 -(void)resetSubviewsWithAlpha:(CGFloat)alpha {
     for (UIView *view in self.subviews) {
-        if (view.tag > 300) {
+        if (view.tag > 0) {
             view.alpha = alpha;
         }
     }

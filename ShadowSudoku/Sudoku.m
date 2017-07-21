@@ -183,7 +183,7 @@ static NSInteger _baseSize = 3;
 }
 
 +(NSInteger)columnForTag:(NSInteger)tag {
-    return tag % Sudoku.baseSize;
+    return tag % Sudoku.size;
 }
 
 +(NSInteger)boxRowForTag:(NSInteger)tag {

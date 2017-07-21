@@ -25,6 +25,8 @@
 
 @implementation SudokuViewController
 
+#pragma mark - View Life Cycle
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -61,43 +63,10 @@
     }];
 }
 
--(void)setupGridView {
-    UIView *gridView = [[UIView alloc] initWithFrame:CGRectZero];
-    [self.view addSubview:gridView];
-    [self setupGridViewConstraints:gridView];
-    self.gridView = gridView;
-}
-
--(void)setupGridViewConstraints:(UIView *)gridView {
-    gridView.translatesAutoresizingMaskIntoConstraints = NO;
-    gridView.userInteractionEnabled = YES;
-    [gridView.topAnchor constraintEqualToAnchor:self.topLayoutGuide.bottomAnchor].active = YES;
-    [gridView.leftAnchor constraintEqualToAnchor:self.view.leftAnchor constant:10.0].active = YES;
-    [gridView.widthAnchor constraintEqualToConstant:self.view.bounds.size.width - 10].active = YES;
-    [gridView.heightAnchor constraintEqualToAnchor:gridView.widthAnchor].active = YES;
-}
-
--(void)setupBoxAtRow:(NSInteger)row andColumn:(NSInteger)column inGridView:(UIView *)gridCellView {
-
-    for (NSInteger i = 0; i < Sudoku.baseSize; i++) {
-        for (NSInteger j = 0; j < Sudoku.baseSize; j++) {
-            NSInteger tag = (row * Sudoku.baseSize + i) * Sudoku.size + column * Sudoku.baseSize + j;
-            UIButton *button = [UIButton buttonWithSudokuStyleForTag:tag
-                                                         sudoku:self.sudoku
-                                                              inGrid:gridCellView];
-            [button addTarget:self
-                       action:@selector(sudokuButtonTapped:)
-             forControlEvents:UIControlEventTouchUpInside];
-            [self.buttons addObject:button];
-            [gridCellView addSubview:button];
-        }
-    }
-}
-
 -(void)setupDigitButtons {
     UIView *gridCellView = [UIView viewWithButtonGridCellStyleInSuperView:self.view
-                                                             atBoxRow:0
-                                                            boxColumn:0];
+                                                                 atBoxRow:0
+                                                                boxColumn:0];
     gridCellView.frame = CGRectMake(10,
                                     self.view.bounds.size.height - 10 - gridCellView.frame.size.height,
                                     gridCellView.frame.size.height,
@@ -145,6 +114,46 @@
     [self drawFocusElements];
 }
 
+
+#pragma mark - View Life Cycle Helper methods
+
+
+-(void)setupGridView {
+    UIView *gridView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.view addSubview:gridView];
+    [self setupGridViewConstraints:gridView];
+    self.gridView = gridView;
+}
+
+-(void)setupGridViewConstraints:(UIView *)gridView {
+    gridView.translatesAutoresizingMaskIntoConstraints = NO;
+    gridView.userInteractionEnabled = YES;
+    [gridView.topAnchor constraintEqualToAnchor:self.topLayoutGuide.bottomAnchor].active = YES;
+    [gridView.leftAnchor constraintEqualToAnchor:self.view.leftAnchor constant:10.0].active = YES;
+    [gridView.widthAnchor constraintEqualToConstant:self.view.bounds.size.width - 10].active = YES;
+    [gridView.heightAnchor constraintEqualToAnchor:gridView.widthAnchor].active = YES;
+}
+
+-(void)setupBoxAtRow:(NSInteger)row andColumn:(NSInteger)column inGridView:(UIView *)gridCellView {
+
+    for (NSInteger i = 0; i < Sudoku.baseSize; i++) {
+        for (NSInteger j = 0; j < Sudoku.baseSize; j++) {
+            NSInteger tag = (row * Sudoku.baseSize + i) * Sudoku.size + column * Sudoku.baseSize + j;
+            UIButton *button = [UIButton buttonWithSudokuStyleForTag:tag
+                                                         sudoku:self.sudoku
+                                                              inGrid:gridCellView];
+            [button addTarget:self
+                       action:@selector(sudokuButtonTapped:)
+             forControlEvents:UIControlEventTouchUpInside];
+            [self.buttons addObject:button];
+            [gridCellView addSubview:button];
+        }
+    }
+}
+
+
+#pragma mark - Drawing focus methods
+
 -(void)drawFocusElements {
     [self drawFocusRow];
     [self drawFocusColumn];
@@ -191,16 +200,6 @@
     }
 }
 
--(void)sudokuButtonTapped:(UIButton *)sender {
-    if ([[self.sudoku originalNumberAtTag:sender.tag] integerValue] != 0) {
-        return;
-    }
-
-    [self clearFocusHighlights];
-    self.focusTag = sender.tag;
-    [self drawFocusElements];
-}
-
 -(void)clearFocusHighlights {
     [self clearFocusBox];
     [self clearFocusRow];
@@ -240,36 +239,57 @@
     }
 }
 
--(void)arrowButtonTapped:(UIButton *)sender {
-    NSInteger tag = sender.tag - 200;
-    NSInteger size = Sudoku.size, baseSize = Sudoku.baseSize;
-    NSInteger horizontalMove = tag % baseSize - 1, verticalMove = tag / baseSize - 1;
-    NSInteger row = self.focusTag / size, column = self.focusTag % size;
+
+#pragma mark - Button actions
+
+-(void)sudokuButtonTapped:(UIButton *)sender {
+    if ([[self.sudoku originalNumberAtTag:sender.tag] integerValue] != 0) {
+        return;
+    }
 
     [self clearFocusHighlights];
+    self.focusTag = sender.tag;
+    [self drawFocusElements];
+}
+
+-(void)arrowButtonTapped:(UIButton *)sender {
+    [self clearFocusHighlights];
+    self.focusTag = [self findNextValidTagFromTag:self.focusTag inDirection:sender.tag];
+    [self clearCellIfNeeded:sender];
+    [self drawFocusElements];
+}
+
+-(void)digitButtonTapped:(UIButton *)sender {
+    [self.sudoku setNumberAtTag:self.focusTag toNumber:sender.tag];
+    UIButton *button = self.buttons[self.focusTag];
+    [button setTitle:sender.titleLabel.text forState:UIControlStateNormal];
+    [button resetSubviewsWithAlpha:0.0];
+}
+
+
+#pragma mark - Helper methods
+
+-(NSInteger)findNextValidTagFromTag:(NSInteger)tag inDirection:(NSInteger)direction {
+    NSInteger size = Sudoku.size, baseSize = Sudoku.baseSize;
+    NSInteger horizontalMove = direction % baseSize - 1, verticalMove = direction / baseSize - 1;
+    NSInteger row = tag / size, column = tag % size;
 
     do {
         row = (row + verticalMove + size) % size;
         column = (column + horizontalMove + size) % size;
-        self.focusTag = row * size + column;
+        tag = row * size + column;
+    } while ([[self.sudoku originalNumberAtTag:tag] integerValue] != 0);
 
-    } while ([[self.sudoku originalNumberAtTag:self.focusTag] integerValue] != 0);
+    return tag;
+}
 
-    if (tag == size / 2) {
+-(void)clearCellIfNeeded:(UIButton *)sender {
+    if (sender.tag == Sudoku.size / 2) {
         [self.sudoku setNumberAtTag:self.focusTag toNumber:0];
         UIButton *button = self.buttons[self.focusTag];
         [button setTitle:@"" forState:UIControlStateNormal];
         [button resetSubviewsWithAlpha:1.0];
     }
-
-    [self drawFocusElements];
-}
-
--(void)digitButtonTapped:(UIButton *)sender {
-    [self.sudoku setNumberAtTag:self.focusTag toNumber:sender.tag - 100];
-    UIButton *button = self.buttons[self.focusTag];
-    [button setTitle:sender.titleLabel.text forState:UIControlStateNormal];
-    [button resetSubviewsWithAlpha:0.0];
 }
 
 @end
