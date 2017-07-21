@@ -12,5 +12,9 @@
 
 +(UIColor *)titleColorForEntry:(NSInteger)entry;
 +(UIColor *)backgroundColorForEntry:(NSInteger)entry;
++(UIColor *)unHighlightedColor;
++(UIColor *)highlightColorForBox;
++(UIColor *)highlightColorForRow;
++(UIColor *)highlightColorForColumn;
 
 @end

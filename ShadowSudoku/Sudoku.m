@@ -178,6 +178,54 @@ static NSInteger _baseSize = 3;
     }
 }
 
+-(NSSet *)tagsRelevantToTag:(NSInteger)tag {
+    NSMutableSet *set = [NSMutableSet set];
+    [set addObjectsFromArray:[self tagsInBox:[Sudoku boxForTag:tag]]];
+    [set addObjectsFromArray:[self tagsInRow:[Sudoku rowForTag:tag]]];
+    [set addObjectsFromArray:[self tagsInRow:[Sudoku columnForTag:tag]]];
+    return [set copy];
+}
+
+-(NSArray *)tagsInBox:(NSInteger)box {
+    NSMutableSet *set = [NSMutableSet set];
+    NSInteger boxRow = box / Sudoku.baseSize, boxColumn = box % Sudoku.baseSize;
+    NSInteger startRow = boxRow * Sudoku.baseSize, startColumn = boxColumn * Sudoku.baseSize;
+
+    for (NSInteger r = 0; r < Sudoku.baseSize; r++) {
+        for (NSInteger c = 0; c < Sudoku.baseSize; c++) {
+            if ([[self originalNumberAtRow:startRow + r column:startColumn + c] integerValue] == 0) {
+                [set addObject:@((startRow + r) * Sudoku.size + startColumn + c)];
+            }
+        }
+    }
+
+    return [set allObjects];
+}
+
+-(NSArray *)tagsInRow:(NSInteger)row {
+    NSMutableSet *set = [NSMutableSet set];
+
+    for (NSInteger column = 0; column < Sudoku.size; column++) {
+        if ([[self originalNumberAtRow:row column:column] integerValue] == 0) {
+            [set addObject:@(row * Sudoku.size + column)];
+        }
+    }
+
+    return [set allObjects];
+}
+
+-(NSArray *)tagsInColumn:(NSInteger)column {
+    NSMutableSet *set = [NSMutableSet set];
+
+    for (NSInteger row = 0; row < Sudoku.size; row++) {
+        if ([[self originalNumberAtRow:row column:column] integerValue] == 0) {
+            [set addObject:@(row * Sudoku.size + column)];
+        }
+    }
+
+    return [set allObjects];
+}
+
 +(NSInteger)rowForTag:(NSInteger)tag {
     return tag / Sudoku.size;
 }

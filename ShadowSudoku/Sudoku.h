@@ -18,6 +18,11 @@
 -(NSNumber *)originalNumberAtTag:(NSInteger)tag;
 -(void)setNumberAtTag:(NSInteger)tag toNumber:(NSInteger)number;
 -(NSSet *)possibleEntriesForTag:(NSInteger)tag;
+-(NSArray *)tagsInColumn:(NSInteger)column;
+-(NSArray *)tagsInRow:(NSInteger)row;
+-(NSArray *)tagsInBox:(NSInteger)box;
+-(NSSet *)tagsRelevantToTag:(NSInteger)tag;
+
 
 +(NSInteger)rowForTag:(NSInteger)tag;
 +(NSInteger)columnForTag:(NSInteger)tag;

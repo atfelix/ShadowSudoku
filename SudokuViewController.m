@@ -162,36 +162,18 @@
 }
 
 -(void)drawFocusBox {
-    for (UIButton *button in self.buttons) {
-        if ([[self.sudoku originalNumberAtTag:button.tag] integerValue] != 0) {
-            continue;
-        }
-        if ([Sudoku boxForTag:button.tag] == [Sudoku boxForTag:self.focusTag]) {
-            button.backgroundColor = [UIColor lightGrayColor];
-        }
-    }
+    [self colorButtonTags:[self.sudoku tagsInBox:[Sudoku boxForTag:self.focusTag]]
+                    color:[UIColor highlightColorForBox]];
 }
 
 -(void)drawFocusRow {
-    for (UIButton *button in self.buttons) {
-        if ([[self.sudoku originalNumberAtTag:button.tag] integerValue] != 0) {
-            continue;
-        }
-        if ([Sudoku rowForTag:button.tag] == [Sudoku rowForTag:self.focusTag]) {
-            button.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.5];
-        }
-    }
+    [self colorButtonTags:[self.sudoku tagsInRow:[Sudoku rowForTag:self.focusTag]]
+                    color:[UIColor highlightColorForRow]];
 }
 
 -(void)drawFocusColumn {
-    for (UIButton *button in self.buttons) {
-        if ([[self.sudoku originalNumberAtTag:button.tag] integerValue] != 0) {
-            continue;
-        }
-        if ([Sudoku columnForTag:button.tag] == [Sudoku columnForTag:self.focusTag]) {
-            button.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.5];
-        }
-    }
+    [self colorButtonTags:[self.sudoku tagsInColumn:[Sudoku columnForTag:self.focusTag]]
+                    color:[UIColor highlightColorForColumn]];
 }
 
 -(void)drawFocusBackground {
@@ -207,35 +189,23 @@
 }
 
 -(void)clearFocusBox {
-    for (UIButton *button in self.buttons) {
-        if ([[self.sudoku originalNumberAtTag:button.tag] integerValue] != 0) {
-            continue;
-        }
-        if ([Sudoku boxForTag:button.tag] == [Sudoku boxForTag:self.focusTag]) {
-            button.backgroundColor = [UIColor backgroundColorForEntry:0];
-        }
-    }
+    [self colorButtonTags:[self.sudoku tagsInBox:[Sudoku boxForTag:self.focusTag]]
+                    color:[UIColor unHighlightedColor]];
 }
 
 -(void)clearFocusRow {
-    for (UIButton *button in self.buttons) {
-        if ([[self.sudoku originalNumberAtTag:button.tag] integerValue] != 0) {
-            continue;
-        }
-        if ([Sudoku rowForTag:button.tag] == [Sudoku rowForTag:self.focusTag]) {
-            button.backgroundColor = [UIColor backgroundColorForEntry:0];
-        }
-    }
+    [self colorButtonTags:[self.sudoku tagsInRow:[Sudoku rowForTag:self.focusTag]]
+                    color:[UIColor unHighlightedColor]];
 }
 
 -(void)clearFocusColumn {
-    for (UIButton *button in self.buttons) {
-        if ([[self.sudoku originalNumberAtTag:button.tag] integerValue] != 0) {
-            continue;
-        }
-        if ([Sudoku columnForTag:button.tag] == [Sudoku columnForTag:self.focusTag]) {
-            button.backgroundColor = [UIColor backgroundColorForEntry:0];
-        }
+    [self colorButtonTags:[self.sudoku tagsInColumn:[Sudoku columnForTag:self.focusTag]]
+                    color:[UIColor unHighlightedColor]];
+}
+
+-(void)colorButtonTags:(NSArray <NSNumber *> *)tags color:(UIColor *)color {
+    for (NSNumber* tag in tags) {
+        ((UIButton *)self.buttons[[tag integerValue]]).backgroundColor = color;
     }
 }
 

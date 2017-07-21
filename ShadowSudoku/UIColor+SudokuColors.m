@@ -18,4 +18,20 @@
     return (entry == 0) ? [UIColor whiteColor] : [UIColor blackColor];
 }
 
++(UIColor *)unHighlightedColor {
+    return [UIColor clearColor];
+}
+
++(UIColor *)highlightColorForBox {
+    return [UIColor lightGrayColor];
+}
+
++(UIColor *)highlightColorForRow {
+    return [[UIColor lightGrayColor] colorWithAlphaComponent:0.5];
+}
+
++(UIColor *)highlightColorForColumn {
+    return [[UIColor lightGrayColor] colorWithAlphaComponent:0.5];
+}
+
 @end
