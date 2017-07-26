@@ -25,7 +25,9 @@
 
 @implementation SudokuViewController
 
+
 #pragma mark - View Life Cycle
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -102,16 +104,12 @@
 }
 
 -(void)setInitialFocus {
-    self.focusTag = -1;
-
     for (NSInteger tag = 0; tag < self.sudoku.size * self.sudoku.size; tag++) {
         if ([[self.sudoku numberAtTag:tag] integerValue] == 0) {
             self.focusTag = tag;
             break;
         }
     }
-
-    [self drawFocusElements];
 }
 
 
@@ -152,7 +150,14 @@
 }
 
 
-#pragma mark - Drawing focus methods
+#pragma mark - Focus tag methods
+
+
+-(void)setFocusTag:(NSInteger)focusTag {
+    [self clearFocusHighlights];
+    _focusTag = focusTag;
+    [self drawFocusElements];
+}
 
 -(void)drawFocusElements {
     [self drawFocusRow];
@@ -212,21 +217,17 @@
 
 #pragma mark - Button actions
 
+
 -(void)sudokuButtonTapped:(UIButton *)sender {
     if ([[self.sudoku originalNumberAtTag:sender.tag] integerValue] != 0) {
         return;
     }
-
-    [self clearFocusHighlights];
     self.focusTag = sender.tag;
-    [self drawFocusElements];
 }
 
 -(void)arrowButtonTapped:(UIButton *)sender {
-    [self clearFocusHighlights];
     self.focusTag = [self findNextValidTagFromTag:self.focusTag inDirection:sender.tag];
     [self clearCellIfNeeded:sender];
-    [self drawFocusElements];
 }
 
 -(void)digitButtonTapped:(UIButton *)sender {
@@ -238,6 +239,7 @@
 
 
 #pragma mark - Helper methods
+
 
 -(NSInteger)findNextValidTagFromTag:(NSInteger)tag inDirection:(NSInteger)direction {
     NSInteger size = self.sudoku.size, baseSize = self.sudoku.baseSize;

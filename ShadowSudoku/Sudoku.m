@@ -113,6 +113,7 @@
 
 #pragma mark - Allowable entries
 
+
 -(NSSet *)allowableEntriesForTag:(NSInteger)tag {
     NSMutableSet *set = [NSMutableSet set];
 
@@ -214,7 +215,7 @@
 }
 
 
-#pragma mark - Row, Column and Box information for a tag
+#pragma mark - Information methods
 
 
 -(NSInteger)rowForTag:(NSInteger)tag {
