@@ -18,11 +18,11 @@
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     NSInteger entry = [[sudoku numberAtTag:tag] integerValue];
 
-    [button setButtonFrameForTag:tag inGrid:gridCellView];
+    [button setButtonFrameForTag:tag inGrid:gridCellView forSudoku:sudoku];
     [button setColorsForEntry:entry];
     [button setBorderWidth:1.0];
     [button setTitleForEntry:entry];
-    [button setButtonTag:tag];
+    [button setButtonTag:tag inSudoku:sudoku];
     [button setLabelsForTag:tag inSudoku:sudoku];
 
     return button;
@@ -78,15 +78,15 @@
           forState:UIControlStateNormal];
 }
 
--(void)setButtonTag:(NSInteger)tag {
-    NSInteger boxRow = [Sudoku boxRowForTag:tag], boxColumn = [Sudoku boxColumnForTag:tag];
-    NSInteger boxSubRow = [Sudoku boxSubRowForTag:tag], boxSubColumn = [Sudoku boxSubColumnForTag:tag];
+-(void)setButtonTag:(NSInteger)tag inSudoku:(Sudoku *)sudoku {
+    NSInteger boxRow = [sudoku boxRowForTag:tag], boxColumn = [sudoku boxColumnForTag:tag];
+    NSInteger boxSubRow = [sudoku boxSubRowForTag:tag], boxSubColumn = [sudoku boxSubColumnForTag:tag];
     self.tag = (boxRow * 3 + boxSubRow) * 9 + boxColumn * 3 + boxSubColumn;
 }
 
--(void)setButtonFrameForTag:(NSInteger)tag inGrid:(UIView *)gridCellView {
+-(void)setButtonFrameForTag:(NSInteger)tag inGrid:(UIView *)gridCellView forSudoku:(Sudoku *)sudoku {
     CGFloat width = gridCellView.frame.size.width / 3;
-    NSInteger boxSubRow = [Sudoku boxSubRowForTag:tag], boxSubColumn = [Sudoku boxSubColumnForTag:tag];
+    NSInteger boxSubRow = [sudoku boxSubRowForTag:tag], boxSubColumn = [sudoku boxSubColumnForTag:tag];
 
     self.frame = CGRectMake(boxSubColumn * width,
                             boxSubRow * width,

@@ -10,8 +10,8 @@
 
 @interface Sudoku : NSObject
 
-@property (class, nonatomic, assign, readonly) NSInteger size;
-@property (class, nonatomic, assign, readonly) NSInteger baseSize;
+@property (nonatomic, assign, readonly) NSInteger size;
+@property (nonatomic, assign, readonly) NSInteger baseSize;
 
 -(instancetype)initFromContentsOfURL: (NSURL *)url;
 -(NSNumber *)numberAtTag:(NSInteger)tag;
@@ -24,12 +24,12 @@
 -(NSSet *)tagsRelevantToTag:(NSInteger)tag;
 
 
-+(NSInteger)rowForTag:(NSInteger)tag;
-+(NSInteger)columnForTag:(NSInteger)tag;
-+(NSInteger)boxRowForTag:(NSInteger)tag;
-+(NSInteger)boxColumnForTag:(NSInteger)tag;
-+(NSInteger)boxSubRowForTag:(NSInteger)tag;
-+(NSInteger)boxSubColumnForTag:(NSInteger)tag;
-+(NSInteger)boxForTag:(NSInteger)tag;
+-(NSInteger)rowForTag:(NSInteger)tag;
+-(NSInteger)columnForTag:(NSInteger)tag;
+-(NSInteger)boxRowForTag:(NSInteger)tag;
+-(NSInteger)boxColumnForTag:(NSInteger)tag;
+-(NSInteger)boxSubRowForTag:(NSInteger)tag;
+-(NSInteger)boxSubColumnForTag:(NSInteger)tag;
+-(NSInteger)boxForTag:(NSInteger)tag;
 
 @end

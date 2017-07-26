@@ -48,8 +48,8 @@
 
     self.buttons = [@[] mutableCopy];
 
-    for (NSInteger i = 0; i < Sudoku.baseSize; i++) {
-        for (NSInteger j = 0; j < Sudoku.baseSize; j++) {
+    for (NSInteger i = 0; i < self.sudoku.baseSize; i++) {
+        for (NSInteger j = 0; j < self.sudoku.baseSize; j++) {
             UIView *gridCellView = [UIView viewWithSudokuCellStyleInSuperView:self.view
                                                                      atBoxRow:i
                                                                     boxColumn:j];
@@ -73,7 +73,7 @@
                                     gridCellView.frame.size.width);
     [self.view addSubview:gridCellView];
 
-    for (NSInteger digit = 1; digit < Sudoku.size + 1; digit++) {
+    for (NSInteger digit = 1; digit < self.sudoku.size + 1; digit++) {
         UIButton *button = [UIButton inputButtonForDigit:digit inGrid:gridCellView];
         [button addTarget:self
                    action:@selector(digitButtonTapped:)
@@ -92,7 +92,7 @@
                                     gridCellView.frame.size.width);
     [self.view addSubview:gridCellView];
 
-    for (NSInteger arrowInt = 0; arrowInt < Sudoku.size; arrowInt++) {
+    for (NSInteger arrowInt = 0; arrowInt < self.sudoku.size; arrowInt++) {
         UIButton *button = [UIButton arrowButtonForInteger:arrowInt inGrid:gridCellView];
         [button addTarget:self
                    action:@selector(arrowButtonTapped:)
@@ -104,7 +104,7 @@
 -(void)setInitialFocus {
     self.focusTag = -1;
 
-    for (NSInteger tag = 0; tag < Sudoku.size * Sudoku.size; tag++) {
+    for (NSInteger tag = 0; tag < self.sudoku.size * self.sudoku.size; tag++) {
         if ([[self.sudoku numberAtTag:tag] integerValue] == 0) {
             self.focusTag = tag;
             break;
@@ -136,9 +136,9 @@
 
 -(void)setupBoxAtRow:(NSInteger)row andColumn:(NSInteger)column inGridView:(UIView *)gridCellView {
 
-    for (NSInteger i = 0; i < Sudoku.baseSize; i++) {
-        for (NSInteger j = 0; j < Sudoku.baseSize; j++) {
-            NSInteger tag = (row * Sudoku.baseSize + i) * Sudoku.size + column * Sudoku.baseSize + j;
+    for (NSInteger i = 0; i < self.sudoku.baseSize; i++) {
+        for (NSInteger j = 0; j < self.sudoku.baseSize; j++) {
+            NSInteger tag = (row * self.sudoku.baseSize + i) * self.sudoku.size + column * self.sudoku.baseSize + j;
             UIButton *button = [UIButton buttonWithSudokuStyleForTag:tag
                                                          sudoku:self.sudoku
                                                               inGrid:gridCellView];
@@ -162,17 +162,17 @@
 }
 
 -(void)drawFocusBox {
-    [self colorButtonTags:[self.sudoku tagsInBox:[Sudoku boxForTag:self.focusTag]]
+    [self colorButtonTags:[self.sudoku tagsInBox:[self.sudoku boxForTag:self.focusTag]]
                     color:[UIColor highlightColorForBox]];
 }
 
 -(void)drawFocusRow {
-    [self colorButtonTags:[self.sudoku tagsInRow:[Sudoku rowForTag:self.focusTag]]
+    [self colorButtonTags:[self.sudoku tagsInRow:[self.sudoku rowForTag:self.focusTag]]
                     color:[UIColor highlightColorForRow]];
 }
 
 -(void)drawFocusColumn {
-    [self colorButtonTags:[self.sudoku tagsInColumn:[Sudoku columnForTag:self.focusTag]]
+    [self colorButtonTags:[self.sudoku tagsInColumn:[self.sudoku columnForTag:self.focusTag]]
                     color:[UIColor highlightColorForColumn]];
 }
 
@@ -189,17 +189,17 @@
 }
 
 -(void)clearFocusBox {
-    [self colorButtonTags:[self.sudoku tagsInBox:[Sudoku boxForTag:self.focusTag]]
+    [self colorButtonTags:[self.sudoku tagsInBox:[self.sudoku boxForTag:self.focusTag]]
                     color:[UIColor unHighlightedColor]];
 }
 
 -(void)clearFocusRow {
-    [self colorButtonTags:[self.sudoku tagsInRow:[Sudoku rowForTag:self.focusTag]]
+    [self colorButtonTags:[self.sudoku tagsInRow:[self.sudoku rowForTag:self.focusTag]]
                     color:[UIColor unHighlightedColor]];
 }
 
 -(void)clearFocusColumn {
-    [self colorButtonTags:[self.sudoku tagsInColumn:[Sudoku columnForTag:self.focusTag]]
+    [self colorButtonTags:[self.sudoku tagsInColumn:[self.sudoku columnForTag:self.focusTag]]
                     color:[UIColor unHighlightedColor]];
 }
 
@@ -240,7 +240,7 @@
 #pragma mark - Helper methods
 
 -(NSInteger)findNextValidTagFromTag:(NSInteger)tag inDirection:(NSInteger)direction {
-    NSInteger size = Sudoku.size, baseSize = Sudoku.baseSize;
+    NSInteger size = self.sudoku.size, baseSize = self.sudoku.baseSize;
     NSInteger horizontalMove = direction % baseSize - 1, verticalMove = direction / baseSize - 1;
     NSInteger row = tag / size, column = tag % size;
 
@@ -254,7 +254,7 @@
 }
 
 -(void)clearCellIfNeeded:(UIButton *)sender {
-    if (sender.tag == Sudoku.size / 2) {
+    if (sender.tag == self.sudoku.size / 2) {
         [self.sudoku setNumberAtTag:self.focusTag toNumber:0];
         UIButton *button = self.buttons[self.focusTag];
         [button setTitle:@"" forState:UIControlStateNormal];
