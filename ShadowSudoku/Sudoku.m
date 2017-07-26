@@ -17,6 +17,10 @@
 
 @implementation Sudoku
 
+
+#pragma mark - Initialization
+
+
 -(instancetype)initFromContentsOfURL:(NSURL *)url {
     self = [super init];
     if (self) {
@@ -56,17 +60,26 @@
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
 
-    NSArray *rowsArray = [sudokuString componentsSeparatedByString:@"\n"];
-
-    if (rowsArray.count != 1) {
+    if (sudokuString.length != _size * _size + 1) {
         puzzle = nil;
         return;
     }
 
     for (int i = 0; i < _size * _size; i++) {
-        NSString *row = rowsArray[i];
-        [puzzle addObject:[numberFormatter numberFromString:row]];
+        [puzzle addObject:[numberFormatter numberFromString:[NSString stringWithFormat:@"%c", [sudokuString characterAtIndex:i]]]];
     }
+}
+
+
+#pragma mark - Accessor methods for entries in puzzles
+
+
+-(NSNumber *)originalNumberAtTag:(NSInteger)tag {
+    return [self.originalPuzzle objectAtIndex:tag];
+}
+
+-(NSNumber *)numberAtTag:(NSInteger)tag {
+    return [self.changingPuzzle objectAtIndex:tag];
 }
 
 -(NSNumber *)numberAtRow:(NSInteger)row column:(NSInteger)column {
@@ -78,50 +91,29 @@
 }
 
 -(NSNumber *)numberAtRow:(NSInteger)row column:(NSInteger)column inGrid:(NSArray *) grid {
-    NSInteger rowNumber = [[grid objectAtIndex:row] integerValue];
-
-    for (NSInteger i = self.size - 1 - column; i > 0; i--) {
-        rowNumber /= 10;
-    }
-
-    return @(rowNumber % 10);
+    return grid[[self indexForRow:row column:column]];
 }
 
 
--(NSNumber *)numberAtTag:(NSInteger)tag {
-    return [self numberAtRow:[self rowForTag:tag]
-                      column:[self columnForTag:tag]];
-}
+#pragma mark - Mutator methods for entries in puzzles
+
 
 -(void)setNumberAtTag:(NSInteger)tag toNumber:(NSInteger)number {
     if ([[self originalNumberAtTag:tag] integerValue] != 0) {
         return;
     }
 
-    [self setNumberAtRow:[self rowForTag:tag]
-                  column:[self columnForTag:tag]
-                toNumber:number];
+    self.changingPuzzle[tag] = @(number);
 }
 
 -(void)setNumberAtRow:(NSInteger)row column:(NSInteger)column toNumber:(NSInteger)number {
-    NSInteger numberAtRow = [[self.changingPuzzle objectAtIndex:row] integerValue];
-    NSInteger factorOfTen = 1;
-
-    for (NSInteger i = 8 - column; i > 0; i--) {
-        factorOfTen *= 10;
-    }
-
-    numberAtRow -= factorOfTen * [[self numberAtRow:row column:column] integerValue];
-    numberAtRow += factorOfTen * number;
-    self.changingPuzzle[row] = @(numberAtRow);
+    self.changingPuzzle[[self indexForRow:row column:column]] = @(number);
 }
 
--(NSNumber *)originalNumberAtTag:(NSInteger)tag {
-    return [self originalNumberAtRow:[self rowForTag:tag]
-                              column:[self columnForTag:tag]];
-}
 
--(NSSet *)possibleEntriesForTag:(NSInteger)tag {
+#pragma mark - Allowable entries
+
+-(NSSet *)allowableEntriesForTag:(NSInteger)tag {
     NSMutableSet *set = [NSMutableSet set];
 
     for (NSInteger i = 1; i <= self.size; i++) {
@@ -168,6 +160,10 @@
         }
     }
 }
+
+
+#pragma mark - Related Tags
+
 
 -(NSSet *)tagsRelevantToTag:(NSInteger)tag {
     NSMutableSet *set = [NSMutableSet set];
@@ -217,6 +213,10 @@
     return [set allObjects];
 }
 
+
+#pragma mark - Row, Column and Box information for a tag
+
+
 -(NSInteger)rowForTag:(NSInteger)tag {
     return tag / self.size;
 }
@@ -243,6 +243,10 @@
 
 -(NSInteger)boxForTag:(NSInteger)tag {
     return [self boxRowForTag:tag] * self.baseSize + [self boxColumnForTag:tag];
+}
+
+-(NSInteger)indexForRow:(NSInteger)row column:(NSInteger)column {
+    return row * self.size + column;
 }
 
 @end

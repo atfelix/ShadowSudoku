@@ -106,7 +106,7 @@
 
 -(void)setLabelsForTag:(NSInteger)tag inSudoku:(Sudoku *)sudoku {
     NSInteger entry = [[sudoku numberAtTag:tag] integerValue];
-    NSSet *possibleEntries = [sudoku possibleEntriesForTag:tag];
+    NSSet *possibleEntries = [sudoku allowableEntriesForTag:tag];
 
     if (entry != 0) {
         return;
