@@ -119,7 +119,7 @@
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(j * width, i * width, width, width)];
             NSInteger entry = 3 * i + j + 1;
             label.text = [NSString stringWithFormat:@"%@", ([possibleEntries containsObject:@(entry)]) ? @(entry) : @""];
-            label.font = [UIFont systemFontOfSize:12];
+            label.font = [UIFont systemFontOfSize:13];
             label.textAlignment = NSTextAlignmentCenter;
             label.tag = entry;
             [self addSubview:label];

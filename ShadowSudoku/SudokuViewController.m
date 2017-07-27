@@ -255,8 +255,8 @@
         UIButton *button = self.buttons[[tag integerValue]];
         for (UIView *view in button.subviews) {
             if (view.tag == sender.tag) {
-                UILabel *label = (UILabel *)view;
-                label.text = @"x";
+                ((UILabel *)view).text = @"✖";
+                ((UILabel *)view).font = [UIFont systemFontOfSize:10];
             }
         }
     }
