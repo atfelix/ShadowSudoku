@@ -121,7 +121,7 @@
             label.text = [NSString stringWithFormat:@"%@", ([possibleEntries containsObject:@(entry)]) ? @(entry) : @""];
             label.font = [UIFont systemFontOfSize:12];
             label.textAlignment = NSTextAlignmentCenter;
-            label.tag = entry + 1;
+            label.tag = entry;
             [self addSubview:label];
         }
     }

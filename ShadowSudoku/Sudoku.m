@@ -129,46 +129,27 @@
 }
 
 -(void)filterEntriesInSet:(NSMutableSet *)set basedOnRowForTag:(NSInteger)tag {
-    NSInteger row = [self rowForTag:tag];
-
-    for (NSInteger column = 0; column < self.size; column++) {
+    [self enumerateOverRow:[self rowForTag:tag] withBlock:^(NSInteger row, NSInteger column) {
         if ([[self originalNumberAtRow:row column:column] integerValue] != 0) {
             [set removeObject:[self originalNumberAtRow:row column:column]];
         }
-    }
+    }];
 }
 
 -(void)filterEntriesInSet:(NSMutableSet *)set basedOnColumnForTag:(NSInteger)tag {
-    NSInteger column = [self columnForTag:tag];
-
-    for (NSInteger row = 0; row < self.size; row ++) {
+    [self enumerateOverColumn:[self columnForTag:tag] withBlock:^(NSInteger row, NSInteger column) {
         if ([[self originalNumberAtRow:row column:column] integerValue] != 0) {
             [set removeObject:[self originalNumberAtRow:row column:column]];
         }
-    }
+    }];
 }
 
 -(void)filterEntriesInSet:(NSMutableSet *)set basedOnBoxForTag:(NSInteger)tag {
-    NSInteger box = [self boxForTag:tag];
-    NSInteger boxRow = box / self.baseSize, boxColumn = box % self.baseSize;
-    NSInteger startRow = self.baseSize * boxRow, startColumn = self.baseSize * boxColumn;
-
-    for (NSInteger r = 0; r < self.baseSize; r++) {
-        for (NSInteger c = 0; c < self.baseSize; c++) {
-            if ([[self originalNumberAtRow:startRow + r column:startColumn + c] integerValue] != 0) {
-                [set removeObject:[self originalNumberAtRow:startRow + r column:startColumn + c]];
-            }
+    [self enumerateOverBox:[self boxForTag:tag] withBlock:^(NSInteger row, NSInteger column) {
+        if ([[self originalNumberAtRow:row column:column] integerValue] != 0) {
+            [set removeObject:[self originalNumberAtRow:row column:column]];
         }
-    }
-}
-
--(void)filterEntriesInSet:(NSMutableSet *)set forTags:(NSArray<NSNumber *> *)tags inGrid:(NSArray *)grid {
-    for (NSNumber *tag in tags) {
-        NSNumber *number = [grid objectAtIndex:[tag integerValue]];
-        if ([number integerValue] != 0) {
-            [set removeObject:number];
-        }
-    }
+    }];
 }
 
 
@@ -176,13 +157,13 @@
 
 
 -(NSSet *)permissibleEntriesForTag:(NSInteger) tag {
-    NSMutableSet *set = [NSMutableSet set];
-
-    for (NSInteger i = 1; i <= self.size; i++) {
-        [set addObject:@(i)];
-    }
-
-    return set;
+    NSMutableSet *set = [[self allowableEntriesForTag:tag] mutableCopy];
+    [self enumerateOverRelevantTagsForTag:tag withBlock:^(NSNumber *nsnumberTag) {
+        if ([[self numberAtTag:[nsnumberTag integerValue]] integerValue] != 0) {
+            [set removeObject:[self numberAtTag:[nsnumberTag integerValue]]];
+        }
+    }];
+    return [set copy];
 }
 
 
@@ -193,7 +174,7 @@
     NSMutableSet *set = [NSMutableSet set];
     [set addObjectsFromArray:[self tagsInBox:[self boxForTag:tag]]];
     [set addObjectsFromArray:[self tagsInRow:[self rowForTag:tag]]];
-    [set addObjectsFromArray:[self tagsInRow:[self columnForTag:tag]]];
+    [set addObjectsFromArray:[self tagsInColumn:[self columnForTag:tag]]];
     return [set copy];
 }
 
@@ -201,7 +182,7 @@
     NSMutableSet *set = [NSMutableSet set];
     [self enumerateOverBox:box withBlock:^(NSInteger row, NSInteger column) {
         if ([[self originalNumberAtRow:row column:column] integerValue] == 0) {
-            [set addObject:@(row * self.size + column)];
+            [set addObject:@([self tagForRow:row column:column])];
         }
     }];
     return [set allObjects];
@@ -211,7 +192,7 @@
     NSMutableSet *set = [NSMutableSet set];
     [self enumerateOverRow:row withBlock:^(NSInteger _row, NSInteger _column) {
         if ([[self originalNumberAtRow:_row column:_column] integerValue] == 0) {
-            [set addObject:@(_row * self.size + _column)];
+            [set addObject:@([self tagForRow:_row column:_column])];
         }
     }];
     return [set allObjects];
@@ -221,7 +202,7 @@
     NSMutableSet *set = [NSMutableSet set];
     [self enumerateOverColumn:column withBlock:^(NSInteger _row, NSInteger _column) {
         if ([[self originalNumberAtRow:_row column:_column] integerValue] == 0) {
-            [set addObject:@(_row * self.size + _column)];
+            [set addObject:@([self tagForRow:_row column:_column])];
         }
     }];
     return [set allObjects];
@@ -251,6 +232,16 @@
         for (NSInteger c = 0; c < self.baseSize; c++) {
             block(startRow + r, startColumn + c);
         }
+    }
+}
+
+-(void)enumerateOverRelevantTagsForTag:(NSInteger)tag withBlock:(void(^)(NSNumber *))block {
+    [self enumerateOverTags:[self tagsRelevantToTag:tag] withBlock:block];
+}
+
+-(void)enumerateOverTags:(NSSet<NSNumber *> *)tags withBlock:(void(^)(NSNumber *))block {
+    for (NSNumber *tag in tags) {
+        block(tag);
     }
 }
 
@@ -287,6 +278,10 @@
 }
 
 -(NSInteger)indexForRow:(NSInteger)row column:(NSInteger)column {
+    return row * self.size + column;
+}
+
+-(NSInteger)tagForRow:(NSInteger)row column:(NSInteger)column {
     return row * self.size + column;
 }
 

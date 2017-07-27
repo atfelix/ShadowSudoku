@@ -18,6 +18,7 @@
 -(NSNumber *)originalNumberAtTag:(NSInteger)tag;
 -(void)setNumberAtTag:(NSInteger)tag toNumber:(NSInteger)number;
 -(NSSet *)allowableEntriesForTag:(NSInteger)tag;
+-(NSSet *)permissibleEntriesForTag:(NSInteger) tag;
 -(NSArray *)tagsInColumn:(NSInteger)column;
 -(NSArray *)tagsInRow:(NSInteger)row;
 -(NSArray *)tagsInBox:(NSInteger)box;

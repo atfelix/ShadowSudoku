@@ -250,6 +250,16 @@
     UIButton *button = self.buttons[self.focusTag];
     [button setTitle:sender.titleLabel.text forState:UIControlStateNormal];
     [button resetSubviewsWithAlpha:0.0];
+
+    for (NSNumber *tag in [self.sudoku tagsRelevantToTag:self.focusTag]) {
+        UIButton *button = self.buttons[[tag integerValue]];
+        for (UIView *view in button.subviews) {
+            if (view.tag == sender.tag) {
+                UILabel *label = (UILabel *)view;
+                label.text = @"x";
+            }
+        }
+    }
 }
 
 
