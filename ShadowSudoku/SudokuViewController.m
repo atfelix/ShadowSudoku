@@ -242,7 +242,7 @@
 
 -(void)arrowButtonTapped:(UIButton *)sender {
     self.focusTag = [self findNextValidTagFromTag:self.focusTag inDirection:sender.tag];
-    [self clearCellIfNeeded:sender];
+    [self clearCellIfNeeded:(sender.tag == self.sudoku.size / 2)];
 }
 
 -(void)digitButtonTapped:(UIButton *)sender {
@@ -251,15 +251,7 @@
     [button setTitle:sender.titleLabel.text forState:UIControlStateNormal];
     [button resetSubviewsWithAlpha:0.0];
 
-    for (NSNumber *tag in [self.sudoku tagsRelevantToTag:self.focusTag]) {
-        UIButton *button = self.buttons[[tag integerValue]];
-        for (UIView *view in button.subviews) {
-            if (view.tag == sender.tag) {
-                ((UILabel *)view).text = @"✖";
-                ((UILabel *)view).font = [UIFont systemFontOfSize:10];
-            }
-        }
-    }
+    [self recalculateLabelsForButtons];
 }
 
 
@@ -280,13 +272,23 @@
     return tag;
 }
 
--(void)clearCellIfNeeded:(UIButton *)sender {
-    if (sender.tag == self.sudoku.size / 2) {
+-(void)clearCellIfNeeded:(BOOL)boolean {
+    if (boolean) {
         [self.sudoku setNumberAtTag:self.focusTag toNumber:0];
         UIButton *button = self.buttons[self.focusTag];
         [button setTitle:@"" forState:UIControlStateNormal];
         [button resetSubviewsWithAlpha:1.0];
+
+        [self recalculateLabelsForButtons];
     }
+}
+
+-(void)recalculateLabelsForButtons {
+    __weak Sudoku *weakSudoku = self.sudoku;
+    [self.sudoku enumerateOverRelevantTagsForTag:self.focusTag withBlock:^(NSNumber *tag) {
+        UIButton *button = self.buttons[[tag integerValue]];
+        [button calculateLabelsBasedOnSudoku:weakSudoku];
+    }];
 }
 
 @end

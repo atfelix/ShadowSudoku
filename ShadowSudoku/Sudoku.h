@@ -23,6 +23,7 @@
 -(NSArray *)tagsInRow:(NSInteger)row;
 -(NSArray *)tagsInBox:(NSInteger)box;
 -(NSSet *)tagsRelevantToTag:(NSInteger)tag;
+-(void)enumerateOverRelevantTagsForTag:(NSInteger)tag withBlock:(void(^)(NSNumber *))block;
 
 
 -(NSInteger)rowForTag:(NSInteger)tag;

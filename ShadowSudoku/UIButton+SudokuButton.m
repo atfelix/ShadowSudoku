@@ -121,6 +121,7 @@
             label.text = [NSString stringWithFormat:@"%@", ([possibleEntries containsObject:@(entry)]) ? @(entry) : @""];
             label.font = [UIFont systemFontOfSize:13];
             label.textAlignment = NSTextAlignmentCenter;
+            label.textColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
             label.tag = entry;
             [self addSubview:label];
         }
@@ -131,6 +132,33 @@
     for (UIView *view in self.subviews) {
         if (view.tag > 0) {
             view.alpha = alpha;
+        }
+    }
+}
+
+-(void)calculateLabelsBasedOnSudoku:(Sudoku *)sudoku {
+    NSSet *permissibleEntries = [sudoku permissibleEntriesForTag:self.tag];
+    NSSet *allowableEntries = [sudoku allowableEntriesForTag:self.tag];
+
+    for (UIView *view in self.subviews) {
+        NSInteger tag = view.tag;
+        if (tag < 1) {
+            continue;
+        }
+
+        UILabel *label = (UILabel *)view;
+        NSNumber *tagNumber = @(tag);
+
+        if ([permissibleEntries containsObject:tagNumber]) {
+            label.text = [NSString stringWithFormat:@"%@", tagNumber];
+            label.font = [UIFont systemFontOfSize:13];
+        }
+        else if ([allowableEntries containsObject:tagNumber]) {
+            label.text = @"✖";
+            label.font = [UIFont systemFontOfSize:10];
+        }
+        else {
+            label.text = @"";
         }
     }
 }

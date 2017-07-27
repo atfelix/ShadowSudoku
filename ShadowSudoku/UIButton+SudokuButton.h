@@ -18,5 +18,6 @@
 
 -(void)resetSubviewsWithAlpha:(CGFloat)alpha;
 -(void)updateDigitButtonInSudoku:(Sudoku *)sudoku forTag:(NSInteger)tag;
+-(void)calculateLabelsBasedOnSudoku:(Sudoku *)sudoku;
 
 @end
