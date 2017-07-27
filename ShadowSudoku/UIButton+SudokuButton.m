@@ -135,4 +135,13 @@
     }
 }
 
+-(void)updateDigitButtonInSudoku:(Sudoku *)sudoku forTag:(NSInteger)tag {
+    NSSet *allowableEntries = [sudoku allowableEntriesForTag:tag];
+    self.enabled = [allowableEntries containsObject:@(self.tag)];
+    self.backgroundColor = (self.isEnabled) ? [UIColor backgroundColorForEntry:0] : [UIColor backgroundColorForEntry:1];
+    [self setTitleColor:(self.isEnabled) ? [UIColor backgroundColorForEntry:1] : [UIColor backgroundColorForEntry:0]
+                 forState:UIControlStateNormal];
+    self.layer.borderColor = self.currentTitleColor.CGColor;
+}
+
 @end

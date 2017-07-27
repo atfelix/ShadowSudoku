@@ -17,5 +17,6 @@
 +(UIButton *)arrowButtonForInteger:(NSInteger)integer inGrid:(UIView *)gridCellView;
 
 -(void)resetSubviewsWithAlpha:(CGFloat)alpha;
+-(void)updateDigitButtonInSudoku:(Sudoku *)sudoku forTag:(NSInteger)tag;
 
 @end

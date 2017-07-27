@@ -20,6 +20,7 @@
 @property (nonatomic, strong) UILabel *label;
 @property (nonatomic, assign) NSInteger focusTag;
 @property (nonatomic, strong) NSMutableArray *buttons;
+@property (nonatomic, strong) NSMutableArray *digitButtons;
 
 @end
 
@@ -66,6 +67,7 @@
 }
 
 -(void)setupDigitButtons {
+    self.digitButtons = [[NSMutableArray alloc] init];
     UIView *gridCellView = [UIView viewWithButtonGridCellStyleInSuperView:self.view
                                                                  atBoxRow:0
                                                                 boxColumn:0];
@@ -80,6 +82,7 @@
         [button addTarget:self
                    action:@selector(digitButtonTapped:)
          forControlEvents:UIControlEventTouchUpInside];
+        [self.digitButtons addObject:button];
         [gridCellView addSubview:button];
     }
 }
@@ -109,6 +112,17 @@
             self.focusTag = tag;
             break;
         }
+    }
+}
+
+
+#pragma mark - Update appearance methods
+
+
+-(void)updateDigitButtonsForTag:(NSInteger)tag {
+    for (NSInteger i = 0; i < self.digitButtons.count; i++) {
+        UIButton *button = self.digitButtons[i];
+        [button updateDigitButtonInSudoku:self.sudoku forTag:tag];
     }
 }
 
@@ -157,6 +171,7 @@
     [self clearFocusHighlights];
     _focusTag = focusTag;
     [self drawFocusElements];
+    [self updateDigitButtonsForTag:focusTag];
 }
 
 -(void)drawFocusElements {

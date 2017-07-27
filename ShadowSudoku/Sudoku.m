@@ -111,7 +111,7 @@
 }
 
 
-#pragma mark - Allowable entries
+#pragma mark - Allowable entries (original puzzle)
 
 
 -(NSSet *)allowableEntriesForTag:(NSInteger)tag {
@@ -162,6 +162,29 @@
     }
 }
 
+-(void)filterEntriesInSet:(NSMutableSet *)set forTags:(NSArray<NSNumber *> *)tags inGrid:(NSArray *)grid {
+    for (NSNumber *tag in tags) {
+        NSNumber *number = [grid objectAtIndex:[tag integerValue]];
+        if ([number integerValue] != 0) {
+            [set removeObject:number];
+        }
+    }
+}
+
+
+#pragma mark - Permissible entries (changing puzzle)
+
+
+-(NSSet *)permissibleEntriesForTag:(NSInteger) tag {
+    NSMutableSet *set = [NSMutableSet set];
+
+    for (NSInteger i = 1; i <= self.size; i++) {
+        [set addObject:@(i)];
+    }
+
+    return set;
+}
+
 
 #pragma mark - Related Tags
 
@@ -176,42 +199,59 @@
 
 -(NSArray *)tagsInBox:(NSInteger)box {
     NSMutableSet *set = [NSMutableSet set];
-    NSInteger boxRow = box / self.baseSize, boxColumn = box % self.baseSize;
-    NSInteger startRow = boxRow * self.baseSize, startColumn = boxColumn * self.baseSize;
-
-    for (NSInteger r = 0; r < self.baseSize; r++) {
-        for (NSInteger c = 0; c < self.baseSize; c++) {
-            if ([[self originalNumberAtRow:startRow + r column:startColumn + c] integerValue] == 0) {
-                [set addObject:@((startRow + r) * self.size + startColumn + c)];
-            }
+    [self enumerateOverBox:box withBlock:^(NSInteger row, NSInteger column) {
+        if ([[self originalNumberAtRow:row column:column] integerValue] == 0) {
+            [set addObject:@(row * self.size + column)];
         }
-    }
-
+    }];
     return [set allObjects];
 }
 
 -(NSArray *)tagsInRow:(NSInteger)row {
     NSMutableSet *set = [NSMutableSet set];
-
-    for (NSInteger column = 0; column < self.size; column++) {
-        if ([[self originalNumberAtRow:row column:column] integerValue] == 0) {
-            [set addObject:@(row * self.size + column)];
+    [self enumerateOverRow:row withBlock:^(NSInteger _row, NSInteger _column) {
+        if ([[self originalNumberAtRow:_row column:_column] integerValue] == 0) {
+            [set addObject:@(_row * self.size + _column)];
         }
-    }
-
+    }];
     return [set allObjects];
 }
 
 -(NSArray *)tagsInColumn:(NSInteger)column {
     NSMutableSet *set = [NSMutableSet set];
+    [self enumerateOverColumn:column withBlock:^(NSInteger _row, NSInteger _column) {
+        if ([[self originalNumberAtRow:_row column:_column] integerValue] == 0) {
+            [set addObject:@(_row * self.size + _column)];
+        }
+    }];
+    return [set allObjects];
+}
 
+
+#pragma mark - Helper Enumeration methods
+
+
+-(void)enumerateOverColumn:(NSInteger)column withBlock:(void(^)(NSInteger, NSInteger))block {
     for (NSInteger row = 0; row < self.size; row++) {
-        if ([[self originalNumberAtRow:row column:column] integerValue] == 0) {
-            [set addObject:@(row * self.size + column)];
+        block(row, column);
+    }
+}
+
+-(void)enumerateOverRow:(NSInteger)row withBlock:(void(^)(NSInteger, NSInteger))block {
+    for (NSInteger column = 0; column < self.size; column++) {
+        block(row, column);
+    }
+}
+
+-(void)enumerateOverBox:(NSInteger)box withBlock:(void(^)(NSInteger, NSInteger))block {
+    NSInteger boxRow = box / self.baseSize, boxColumn = box % self.baseSize;
+    NSInteger startRow = boxRow * self.baseSize, startColumn = boxColumn * self.baseSize;
+
+    for (NSInteger r = 0; r < self.baseSize; r++) {
+        for (NSInteger c = 0; c < self.baseSize; c++) {
+            block(startRow + r, startColumn + c);
         }
     }
-
-    return [set allObjects];
 }
 
 
